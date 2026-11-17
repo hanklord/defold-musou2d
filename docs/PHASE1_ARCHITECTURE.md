@@ -28,9 +28,9 @@ musou2d/
 │   └── main.script                   # [Lead] 場景初始化、攝影機微震動與沙盒控制
 ├── assets/
 │   ├── raw/
-│   │   └── test_hero.png             # [Rigger] 測試用單張角色立繪（512x512 RGBA）
+│   │   └── musou2d_hero_input.jpg    # [Rigger] 用戶提供之三國關刀武將 17 部件拆解圖（1024x1024）
 │   └── spine/
-│       ├── parts/                    # [Rigger] 自動切分之 13 張部位 PNG 圖層
+│       ├── parts/                    # [Rigger] 自動去背 + 連通區塊切分之 17 張部位 PNG 圖層
 │       ├── hero.atlas                # [Rigger] 自動生成之 Defold Atlas
 │       ├── hero.spinejson            # [Rigger] 自動生成之 Spine 4.2 骨骼與 9 動作 JSON
 │       └── hero.spinescene           # [Rigger] 綁定 hero.spinejson 與 hero.atlas
@@ -66,36 +66,34 @@ musou2d/
 ## 3. 角色立繪自動拆圖與 Spine 骨骼動畫管線契約 (`musou2d-spine-rigger-t34679`)
 
 ### 3.1 CLI 執行介面
-工具腳本 `tools/auto_rig_spine.py` 必須支援一鍵命令列執行：
+工具腳本 `tools/auto_rig_spine.py` 必須支援一鍵命令列執行（預設處理用戶提供之 `assets/raw/musou2d_hero_input.jpg` 1024×1024 三國關刀武將部件圖，亦支援任意新角色圖）：
 ```bash
-# 1. 若尚未提供立繪，可自動生成高品質測試無雙武將立繪並跑通全流程：
-python3 tools/auto_rig_spine.py --input assets/raw/test_hero.png --output-dir assets/spine --name hero --generate-default-if-missing
-
-# 2. 使用者提供任意角色單張立繪（PNG/JPG）時，直接指定 --input 即可一鍵覆寫更新：
-python3 tools/auto_rig_spine.py --input /path/to/user_character.png --output-dir assets/spine --name hero
+python3 tools/auto_rig_spine.py \
+  --input assets/raw/musou2d_hero_input.jpg \
+  --output-dir assets/spine \
+  --name hero
 ```
-**前處理要求**：
-- 若輸入圖片無 Alpha 通道（RGB）或背景非透明，自動以四角背景取樣 + 顏色距離閾值去背轉為 RGBA。
-- 自動偵測角色非透明像素 Bounding Box，等比縮放並置中正規化至 `512x512` 標準畫布後進行解剖比例切分，並在關節交界處自動補齊圓弧重疊邊緣（Joint Feathering / Overlap Padding 6~10px），避免旋轉時產生裂縫。
+**前處理與連通區塊自動切分要求**：
+- 自動以背景色取樣（純淺灰底 `#C8C8C8` 顏色距離閾值 + 邊緣羽化去背）轉為透明 RGBA。
+- 透過 Connected-Component Labeling (連通區塊標記) 自動偵測並切分畫面中 **17 個獨立分離部件 Island**（或對單體立繪進行解剖區域切分），自動計算各部件 Pivot 與關節座標。
 
-### 3.2 自動拆圖 13 個標準部位圖層 (Cutout Parts Contract)
-輸出至 `assets/spine/parts/<part_name>.png`，繪製順序（Slot Draw Order 由後往前）如下：
+### 3.2 自動拆圖 17 個標準部位圖層 (17-Island Cutout Parts Contract)
+從 `assets/raw/musou2d_hero_input.jpg` 自動切分輸出至 `assets/spine/parts/<part_name>.png`（共 17 個部件 Island，包含 13 個主體骨骼部件 + 4 個可替換手型 Attachments）：
 
-| 繪製順序 | 部件名稱 (`slot` / `attachment`) | 綁定骨骼 (`bone`) | 解剖切分區域與用途說明 |
-| :--- | :--- | :--- | :--- |
-| 1 (底層) | `cape` | `cape` | 披風 / 背部飄帶（隨移動與攻擊大幅飄動） |
-| 2 | `arm_r_upper` | `arm_r_upper` | 右上臂（後側手） |
-| 3 | `arm_r_lower` | `arm_r_lower` | 右前臂與手掌（持武器之手） |
-| 4 | `weapon` | `weapon` | 無雙長柄武器（方天畫戟/長刀，具大範圍揮砍軌跡） |
-| 5 | `leg_r_upper` | `leg_r_upper` | 右大腿（後側腿） |
-| 6 | `leg_r_lower` | `leg_r_lower` | 右小腿與戰靴 |
-| 7 (核心) | `torso` | `torso` | 軀幹胸甲與腰甲（角色重心樞紐） |
-| 8 | `leg_l_upper` | `leg_l_upper` | 左大腿（前側腿） |
-| 9 | `leg_l_lower` | `leg_l_lower` | 左小腿與戰靴 |
-| 10 | `head` | `head` | 頭顱、臉部與頭盔主體 |
-| 11 | `hair_front` | `hair_front` | 頭冠翎毛 / 前髮（隨頭部動作擺動） |
-| 12 | `arm_l_upper` | `arm_l_upper` | 左上臂（前側手） |
-| 13 (頂層) | `arm_l_lower` | `arm_l_lower` | 左前臂與手掌 |
+1. **`head`**（左上：頭盔+紅纓+頭部，綁定於 `head` 骨骼）
+2. **`torso`**（胸甲軀幹，綁定於 `torso` 骨骼）
+3. **`skirt` / `waist`**（中下：腰帶+腰甲戰裙，綁定於 `hip` 或 `skirt` 骨骼）
+4. **`cape`**（中右下：紅色披風，最底層 Z-order，綁定於 `cape` 骨骼）
+5. **`arm_r_upper`**（左側：右上臂+肩甲，綁定於 `arm_r_upper` 骨骼）
+6. **`arm_r_lower`**（最左：右前臂+張開手，綁定於 `arm_r_lower` 骨骼）
+7. **`arm_l_upper`**（胸甲右側：左上臂+肩甲，綁定於 `arm_l_upper` 骨骼）
+8. **`arm_l_lower`**（左上臂下方：左前臂護腕，綁定於 `arm_l_lower` 骨骼）
+9–12. **`hand_1` ~ `hand_4`**（中間排 4 個獨立替換手型：張開手、握拳、左斜握拳、右斜握拳，掛載於 `hand_l` / `weapon_hand` slot 供持刀與攻擊切換 Attachment）
+13. **`leg_r_upper`**（右大腿，綁定於 `leg_r_upper` 骨骼）
+14. **`leg_r_lower`**（左下：右小腿+戰靴，綁定於 `leg_r_lower` 骨骼）
+15. **`leg_l_upper`**（左大腿，綁定於 `leg_l_upper` 骨骼）
+16. **`leg_l_lower`**（左中下：左小腿+戰靴，綁定於 `leg_l_lower` 骨骼）
+17. **`weapon` / `guandao`**（最右側垂直長柄關刀完整武器，綁定於 `weapon` 骨骼）
 
 ### 3.3 Spine 4.2 骨骼階層與嚴格格式規範 (`hero.spinejson`)
 `extension-spine` 4.9.4 內建 Spine 4.2 C Runtime (`SkeletonJson.c`)，生成的 `.spinejson` **必須嚴格遵守 Spine 4.2 JSON 規範**：
