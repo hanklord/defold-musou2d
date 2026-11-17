@@ -589,6 +589,17 @@ def build_spine_42_json(part_meta: Dict[str, Dict]) -> Dict:
         {"name": "shin_r", "parent": "thigh_r", "x": -4.0, "y": -52.0, "length": 58.0},
         {"name": "thigh_l", "parent": "hip", "x": 16.0, "y": -6.0, "length": 54.0},
         {"name": "shin_l", "parent": "thigh_l", "x": 6.0, "y": -52.0, "length": 58.0},
+        # Architecture doc alias bones for 100% compatibility with both contracts
+        {"name": "skirt", "parent": "waist", "x": 0.0, "y": 0.0, "length": 45.0},
+        {"name": "arm_r_upper", "parent": "arm_r", "x": 0.0, "y": 0.0, "length": 38.0},
+        {"name": "arm_r_lower", "parent": "forearm_r", "x": 0.0, "y": 0.0, "length": 36.0},
+        {"name": "weapon", "parent": "weapon_guandao", "x": 0.0, "y": 0.0, "length": 160.0},
+        {"name": "arm_l_upper", "parent": "arm_l", "x": 0.0, "y": 0.0, "length": 38.0},
+        {"name": "arm_l_lower", "parent": "forearm_l", "x": 0.0, "y": 0.0, "length": 36.0},
+        {"name": "leg_r_upper", "parent": "thigh_r", "x": 0.0, "y": 0.0, "length": 45.0},
+        {"name": "leg_r_lower", "parent": "shin_r", "x": 0.0, "y": 0.0, "length": 45.0},
+        {"name": "leg_l_upper", "parent": "thigh_l", "x": 0.0, "y": 0.0, "length": 45.0},
+        {"name": "leg_l_lower", "parent": "shin_l", "x": 0.0, "y": 0.0, "length": 45.0},
     ]
 
     # Back-to-front draw order
@@ -596,7 +607,7 @@ def build_spine_42_json(part_meta: Dict[str, Dict]) -> Dict:
         {"name": "cape", "bone": "cape", "attachment": "cape"},
         {"name": "arm_upper_l", "bone": "arm_l", "attachment": "arm_upper_l"},
         {"name": "forearm_l", "bone": "forearm_l", "attachment": "forearm_l"},
-        {"name": "hand_l", "bone": "hand_l", "attachment": "hand_1"},
+        {"name": "hand_l", "bone": "hand_l", "attachment": "hand_2"},
         {"name": "thigh_r", "bone": "thigh_r", "attachment": "thigh_r"},
         {"name": "shin_r", "bone": "shin_r", "attachment": "shin_r"},
         {"name": "thigh_l", "bone": "thigh_l", "attachment": "thigh_l"},

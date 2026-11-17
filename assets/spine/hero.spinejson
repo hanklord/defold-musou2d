@@ -124,6 +124,76 @@
       "x": 6.0,
       "y": -52.0,
       "length": 58.0
+    },
+    {
+      "name": "skirt",
+      "parent": "waist",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 45.0
+    },
+    {
+      "name": "arm_r_upper",
+      "parent": "arm_r",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 38.0
+    },
+    {
+      "name": "arm_r_lower",
+      "parent": "forearm_r",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 36.0
+    },
+    {
+      "name": "weapon",
+      "parent": "weapon_guandao",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 160.0
+    },
+    {
+      "name": "arm_l_upper",
+      "parent": "arm_l",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 38.0
+    },
+    {
+      "name": "arm_l_lower",
+      "parent": "forearm_l",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 36.0
+    },
+    {
+      "name": "leg_r_upper",
+      "parent": "thigh_r",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 45.0
+    },
+    {
+      "name": "leg_r_lower",
+      "parent": "shin_r",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 45.0
+    },
+    {
+      "name": "leg_l_upper",
+      "parent": "thigh_l",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 45.0
+    },
+    {
+      "name": "leg_l_lower",
+      "parent": "shin_l",
+      "x": 0.0,
+      "y": 0.0,
+      "length": 45.0
     }
   ],
   "slots": [
@@ -145,7 +215,7 @@
     {
       "name": "hand_l",
       "bone": "hand_l",
-      "attachment": "hand_1"
+      "attachment": "hand_2"
     },
     {
       "name": "thigh_r",
