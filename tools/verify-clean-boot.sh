@@ -32,12 +32,31 @@ rm -f "$LOG_FILE"
 
 echo "=== Running engine binary ($ENGINE_BIN) to capture boot log ==="
 set +e
-(cd "$ENGINE_DIR" && timeout 4s "./$(basename "$ENGINE_BIN")" >"$LOG_FILE" 2>&1)
+# Local (rootless) fallback for libGLU/libOpenGL: extract via `apt-get download` + `dpkg -x` into $LOCAL_GL_LIBS
+LOCAL_GL_LIBS="${LOCAL_GL_LIBS:-${HOME}/defold-tools/libs/root/usr/lib/x86_64-linux-gnu}"
+if [ -d "$LOCAL_GL_LIBS" ]; then
+  export LD_LIBRARY_PATH="${LOCAL_GL_LIBS}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+fi
+(cd "$ENGINE_DIR" && timeout 6s "./$(basename "$ENGINE_BIN")" >"$LOG_FILE" 2>&1)
+ENGINE_EXIT=$?
 set -e
 
 cat "$LOG_FILE"
 
-if grep -E "Invalid mass|GAMESYS.*ERROR|ERROR:SCRIPT|ERROR:GAMEOBJECT|ERROR:SPINE|ERROR:RESOURCE|Failed to create|Lua error" "$LOG_FILE"; then
+# Engine must still be running when timeout kills it (exit 124); anything else = crash / failed to launch
+if [ "$ENGINE_EXIT" -ne 124 ]; then
+  echo "FAIL: Engine exited early with code $ENGINE_EXIT (expected 124 = still running at timeout)"
+  exit 1
+fi
+
+for marker in "Defold Engine" "Loading data from" "Registered spine extension"; do
+  if ! grep -q "$marker" "$LOG_FILE"; then
+    echo "FAIL: Expected boot marker not found in log: '$marker'"
+    exit 1
+  fi
+done
+
+if grep -E "error while loading shared libraries|Segmentation fault|Invalid mass|GAMESYS.*ERROR|ERROR:SCRIPT|ERROR:GAMEOBJECT|ERROR:SPINE|ERROR:RESOURCE|Failed to create|Lua error" "$LOG_FILE"; then
   echo "FAIL: Runtime engine boot error detected in log!"
   exit 1
 fi
