@@ -2,6 +2,7 @@ local constants = require("shared.constants")
 local fsm_mod = require("shared.fsm")
 local movement = require("shared.movement")
 local combat_mod = require("shared.combat")
+local event_gate_mod = require("shared.event_gate")
 
 local HASH_MOVE_UP = hash("move_up")
 local HASH_MOVE_DOWN = hash("move_down")
@@ -33,6 +34,8 @@ local HASH_TO_TAG = {
 	[hash("C4")] = "C4",
 	[hash("MUSOU")] = "MUSOU",
 	[hash("step")] = "step",
+	[hash("left")] = "left",
+	[hash("right")] = "right",
 	[hash("burst")] = "burst",
 	[hash("")] = ""
 }
@@ -140,6 +143,20 @@ end
 
 local play_state_animation
 
+local function reset_event_gate(self)
+	local st = self.fsm.state
+	local loop_duration = nil
+	if constants.ANIM_PLAYBACK[st] == "LOOP_FORWARD" then
+		loop_duration = constants.ANIM_DURATION[st]
+	end
+	if not self.event_gate then
+		self.event_gate = event_gate_mod.new(constants.ANIM_EVENTS[st], loop_duration)
+	else
+		self.event_gate:reset(constants.ANIM_EVENTS[st], loop_duration)
+	end
+	self.event_gate_transition = self.fsm.transition_count
+end
+
 local function spine_callback(self, message_id, message, sender)
 	if message_id == HASH_SPINE_EVENT then
 		local ev_id = message.event_id
@@ -147,17 +164,20 @@ local function spine_callback(self, message_id, message, sender)
 		local int_val = message.integer or 0
 		local float_val = message.float or 0.0
 
+		local name = nil
 		if ev_id == HASH_HITBOX_ON then
-			self.spine_fired_hitbox_on = true
-			process_spine_event(self, "hitbox_on", int_val, float_val, str_val)
+			name = "hitbox_on"
 		elseif ev_id == HASH_HITBOX_OFF then
-			self.spine_fired_hitbox_off = true
-			process_spine_event(self, "hitbox_off", int_val, float_val, str_val)
+			name = "hitbox_off"
 		elseif ev_id == HASH_MUSOU_BURST then
-			self.spine_fired_burst = true
-			process_spine_event(self, "musou_burst", int_val, float_val, str_val)
+			name = "musou_burst"
 		elseif ev_id == HASH_FOOTSTEP then
-			process_spine_event(self, "footstep", int_val, float_val, str_val)
+			name = "footstep"
+		end
+		-- Shared gate with the fallback schedule: each schedule index fires once
+		-- per activation, whichever source (Spine / fallback) arrives first.
+		if name and self.event_gate:claim(name, self.fsm.state_time) then
+			process_spine_event(self, name, int_val, float_val, str_val)
 		end
 	elseif message_id == HASH_SPINE_ANIM_DONE then
 		local prev_transition = self.fsm.transition_count
@@ -177,10 +197,7 @@ play_state_animation = function(self, force)
 	end
 	self.current_anim = st
 	self.last_played_transition = self.fsm.transition_count
-	self.fired_schedule = {}
-	self.spine_fired_hitbox_on = false
-	self.spine_fired_hitbox_off = false
-	self.spine_fired_burst = false
+	reset_event_gate(self)
 	self.combat:deactivate_hitbox()
 
 	local playback = go.PLAYBACK_ONCE_FORWARD
@@ -211,7 +228,7 @@ function init(self)
 	self.held = { up = false, down = false, left = false, right = false }
 	self.current_anim = nil
 	self.last_played_transition = -1
-	self.fired_schedule = {}
+	reset_event_gate(self)
 
 	apply_facing_rotation(self)
 	play_state_animation(self, true)
@@ -219,24 +236,13 @@ function init(self)
 end
 
 local function check_fallback_event_schedule(self)
-	local schedule = constants.ANIM_EVENTS[self.fsm.state]
-	if not schedule then
-		return
+	if self.event_gate_transition ~= self.fsm.transition_count then
+		reset_event_gate(self)
 	end
-	for i = 1, #schedule do
-		local item = schedule[i]
-		if not self.fired_schedule[i] and self.fsm.state_time >= item.time then
-			self.fired_schedule[i] = true
-			if item.event == "hitbox_on" and not self.spine_fired_hitbox_on then
-				process_spine_event(self, "hitbox_on", item.int, item.float, item.string)
-			elseif item.event == "hitbox_off" and not self.spine_fired_hitbox_off then
-				process_spine_event(self, "hitbox_off", item.int, item.float, item.string)
-			elseif item.event == "musou_burst" and not self.spine_fired_burst then
-				process_spine_event(self, "musou_burst", item.int, item.float, item.string)
-			end
-			self.spine_fired_hitbox_on = false
-			self.spine_fired_hitbox_off = false
-		end
+	local due = self.event_gate:poll(self.fsm.state_time)
+	for i = 1, #due do
+		local item = due[i]
+		process_spine_event(self, item.event, item.int, item.float, item.string)
 	end
 end
 

@@ -165,8 +165,8 @@ M.ATTACK_SPECS = {
 M.ANIM_EVENTS = {
 	idle = {},
 	run = {
-		{ time = 0.15, event = "footstep", int = 1, float = 0.0, string = "step" },
-		{ time = 0.45, event = "footstep", int = 1, float = 0.0, string = "step" }
+		{ time = 0.15, event = "footstep", int = 1, float = 0.0, string = "left" },
+		{ time = 0.45, event = "footstep", int = 2, float = 0.0, string = "right" }
 	},
 	attack_1 = {
 		{ time = 0.14, event = "hitbox_on", int = 12, float = 1.0, string = "N1" },
