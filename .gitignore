@@ -2,6 +2,7 @@
 web-chat.json
 build/
 dist/
+dist_linux/
 .internal/
 __pycache__/
 *.pyc

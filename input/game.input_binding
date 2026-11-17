@@ -1,0 +1,76 @@
+key_trigger {
+  input: KEY_W
+  action: "move_up"
+}
+key_trigger {
+  input: KEY_UP
+  action: "move_up"
+}
+key_trigger {
+  input: KEY_S
+  action: "move_down"
+}
+key_trigger {
+  input: KEY_DOWN
+  action: "move_down"
+}
+key_trigger {
+  input: KEY_A
+  action: "move_left"
+}
+key_trigger {
+  input: KEY_LEFT
+  action: "move_left"
+}
+key_trigger {
+  input: KEY_D
+  action: "move_right"
+}
+key_trigger {
+  input: KEY_RIGHT
+  action: "move_right"
+}
+key_trigger {
+  input: KEY_J
+  action: "attack_light"
+}
+key_trigger {
+  input: KEY_Z
+  action: "attack_light"
+}
+key_trigger {
+  input: KEY_K
+  action: "attack_heavy"
+}
+key_trigger {
+  input: KEY_X
+  action: "attack_heavy"
+}
+key_trigger {
+  input: KEY_L
+  action: "dash"
+}
+key_trigger {
+  input: KEY_SPACE
+  action: "dash"
+}
+key_trigger {
+  input: KEY_U
+  action: "musou"
+}
+key_trigger {
+  input: KEY_C
+  action: "musou"
+}
+key_trigger {
+  input: KEY_H
+  action: "test_hit"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_LEFT
+  action: "attack_light"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_RIGHT
+  action: "attack_heavy"
+}
