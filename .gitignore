@@ -1,0 +1,8 @@
+.agents/
+web-chat.json
+build/
+dist/
+.internal/
+__pycache__/
+*.pyc
+.DS_Store
