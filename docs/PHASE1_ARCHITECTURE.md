@@ -109,22 +109,40 @@ python3 tools/auto_rig_spine.py \
      "height": 280
    }
    ```
-2. **`bones` 骨骼樹**：
-   - `root` `(0, 0)`
-     - `hip` `(0, 95)` — 全身重心（控制跑步上下起伏、受擊後仰、閃避前衝）
-       - `torso` `(0, 10, length: 65, rotation: 90)`
-         - `head` `(65, 0, length: 45, rotation: 0)`
-           - `hair_front` `(35, 8, length: 35, rotation: -120)`
-         - `cape` `(55, -10, length: 90, rotation: -165)`
-         - `arm_l_upper` `(55, 22, length: 38, rotation: -155)`
-           - `arm_l_lower` `(38, 0, length: 36, rotation: 25)`
-         - `arm_r_upper` `(55, -22, length: 38, rotation: -145)`
-           - `arm_r_lower` `(38, 0, length: 36, rotation: 35)`
-             - `weapon` `(32, 0, length: 140, rotation: 45)`
-       - `leg_l_upper` `(-8, -12, length: 45, rotation: -85)`
-         - `leg_l_lower` `(45, 0, length: 45, rotation: -5)`
-       - `leg_r_upper` `(8, -12, length: 45, rotation: -95)`
-         - `leg_r_lower` `(45, 0, length: 45, rotation: -5)`
+2. **`bones` 骨骼樹**（以 `tools/auto_rig_spine.py` 實際輸出為準；座標為父骨局部座標 `(x, y)`，所有骨骼 `rotation = 0`，`length` 僅供編輯器顯示）：
+   - **雙命名（dual-naming）**：骨架分兩層。
+     - **動畫骨（Animation bones）**：實際承載 slot 與所有 `rotate` / `translate` / `scale` timeline，命名沿用拆圖部件語意（`arm_r`、`forearm_r`、`thigh_*`、`shin_*`、`weapon_guandao`…）。
+     - **契約 alias 骨（Contract alias bones）**：S-1 契約名 `arm_*_upper` / `arm_*_lower` / `leg_*_upper` / `leg_*_lower` / `weapon` / `skirt`，皆為對應動畫骨的 **0 偏移子骨**（`x = y = rotation = 0`），不掛 slot、不打關鍵幀，僅隨父骨移動。供遊戲端 `spine.get_go()` / 掛點 / hitbox 以契約名查找世界座標。
+   - 樹狀結構：
+     - `root` `(0, 0)`
+       - `hip` `(0, 122)` — 全身重心（控制跑步上下起伏、受擊後仰、閃避前衝）；腳底落在 `root` y=0
+         - `torso` `(0, 6)`
+           - `head` `(4, 66)`
+           - `cape` `(-8, 58)`
+           - `waist` `(0, -2)` → slot `waist_skirt`
+             - `skirt` *(alias, 0 偏移)*
+           - `arm_r` `(-28, 52)` → slot `arm_upper_r`
+             - `arm_r_upper` *(alias)*
+             - `forearm_r` `(-16, -34)` → slot `forearm_r`
+               - `arm_r_lower` *(alias)*
+               - `hand_r` `(2, -42)` — 持刀握點（無 slot，見下方說明）
+                 - `weapon_guandao` `(42, 12)` → slot `weapon_guandao`
+                   - `weapon` *(alias)*
+           - `arm_l` `(26, 50)` → slot `arm_upper_l`
+             - `arm_l_upper` *(alias)*
+             - `forearm_l` `(14, -32)` → slot `forearm_l`
+               - `arm_l_lower` *(alias)*
+               - `hand_l` `(8, -26)` → slot `hand_l`（預設 attachment `hand_2`，動畫以 attachment timeline 切換 `hand_1..hand_4` 手勢）
+         - `thigh_r` `(-16, -6)` → slot `thigh_r`
+           - `leg_r_upper` *(alias)*
+           - `shin_r` `(-4, -52)` → slot `shin_r`
+             - `leg_r_lower` *(alias)*
+         - `thigh_l` `(16, -6)` → slot `thigh_l`
+           - `leg_l_upper` *(alias)*
+           - `shin_l` `(6, -52)` → slot `shin_l`
+             - `leg_l_lower` *(alias)*
+   - **為何沒有 `hand_r` / `weapon_hand` slot**：原圖 17 島中只有 4 個手型島（`hand_1..hand_4`，皆為左手空手手勢），右手握柄已畫在 `forearm_r` 末端並與關刀柄重疊；draw order 中 `weapon_guandao` 在 `forearm_r` 之下，形成「手握刀柄」的遮擋。若再加一個 `hand_r` slot 會在握點重複繪製且沒有對應素材。`hand_r` 骨仍保留作為武器握點 pivot 與遊戲端武器特效掛點（等同 `weapon_hand` 用途）；日後若美術提供右手握拳部件，可直接在 `hand_r` 上新增 slot（排在 `weapon_guandao` 之上），無須改骨架。
+   - 原始設計中的 `hair_front` 骨未實作（原圖頭髮與 `head` 為同一島）。
 3. **`skins` 格式鐵律（Spine 4.2 必填 Array，不可用 Object）**：
    ```json
    "skins": [

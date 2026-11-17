@@ -1145,6 +1145,23 @@ def write_defold_spinescene(spinescene_path: str, spinejson_proj_path: str, atla
         f.write(content)
 
 
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def _repo_relative_path(path: str) -> str:
+    """Return `path` relative to the repo root (POSIX separators) so generated
+    metadata is identical regardless of who runs the pipeline or from where.
+    Paths outside the repo (e.g. temp test inputs) stay absolute."""
+    abs_path = os.path.abspath(path)
+    try:
+        rel = os.path.relpath(abs_path, REPO_ROOT)
+    except ValueError:  # different drive on Windows
+        return abs_path.replace(os.sep, "/")
+    if rel == ".." or rel.startswith(".." + os.sep):
+        return abs_path.replace(os.sep, "/")
+    return rel.replace(os.sep, "/")
+
+
 def run_pipeline(input_path: str, output_dir: str, name: str) -> Dict:
     if not os.path.isfile(input_path):
         raise FileNotFoundError(f"Input image not found: {input_path}")
@@ -1191,7 +1208,7 @@ def run_pipeline(input_path: str, output_dir: str, name: str) -> Dict:
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(
             {
-                "source_image": input_path,
+                "source_image": _repo_relative_path(input_path),
                 "source_size": [int(arr_rgb.shape[1]), int(arr_rgb.shape[0])],
                 "part_count": len(part_meta),
                 "parts": part_meta,
