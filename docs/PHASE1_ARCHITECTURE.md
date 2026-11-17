@@ -230,3 +230,8 @@ python3 tools/auto_rig_spine.py --input /path/to/user_character.png --output-dir
    - 使用 `bob.jar` 建置 `x86_64-linux` debug 執行檔並實際啟動引擎，擷取 stdout/stderr，斷言無 `Invalid mass`、`GAMESYS`、`ERROR`、`Failed to` 等執行期初始化錯誤。
 4. **Gate 4 — HTML5 (`wasm-web`) Bundle 建置驗證 (`tools/smoke-html5.sh`)**：
    - 使用 `bob.jar --platform wasm-web --archive --variant release --build-server https://build.defold.com --bundle-output dist resolve distclean build bundle` 完成打包，確認 `dist/` 下產出 `.wasm`、`index.html`、`dmloader.js` 與資源壓縮檔。
+5. **Gate 5 — GitHub 版控與 GitHub Pages 線上部署驗證 (`tools/deploy-gh-pages.sh`)**：
+   - 遠端儲存庫：`https://github.com/hanklord/defold-musou2d`（預設分支 `main`）。
+   - 將 `dist/<project_title>/` 內完整的 HTML5 `wasm-web` 打包產物（含 `.nojekyll`、`index.html`、`*.wasm`、`*_wasm.js`、`dmloader.js`、`archive/*`）推送至 `gh-pages` 分支並啟用 GitHub Pages。
+   - 驗證 `https://hanklord.github.io/defold-musou2d/` 與 `.wasm` 靜態資源皆回傳 HTTP 200。
+
