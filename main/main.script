@@ -1,0 +1,64 @@
+local constants = require("shared.constants")
+
+local HASH_CAMERA_SHAKE = hash("camera_shake")
+
+local ARENA_LINE_COLOR = vmath.vector4(0.26, 0.32, 0.42, 0.65)
+local LANE_LINE_COLOR = vmath.vector4(0.18, 0.22, 0.30, 0.45)
+
+function init(self)
+	msg.post("@render:", "clear_color", {
+		color = vmath.vector4(0.11, 0.13, 0.18, 1.0)
+	})
+	self.shake_timer = 0.0
+	self.shake_intensity = 0.0
+	self.time = 0.0
+end
+
+local function draw_arena_grid()
+	local b = constants.ARENA_BOUNDS
+	local p_bl = vmath.vector3(b.min_x, b.min_y, 0.0)
+	local p_br = vmath.vector3(b.max_x, b.min_y, 0.0)
+	local p_tr = vmath.vector3(b.max_x, b.max_y, 0.0)
+	local p_tl = vmath.vector3(b.min_x, b.max_y, 0.0)
+
+	msg.post("@render:", "draw_line", { start_point = p_bl, end_point = p_br, color = ARENA_LINE_COLOR })
+	msg.post("@render:", "draw_line", { start_point = p_br, end_point = p_tr, color = ARENA_LINE_COLOR })
+	msg.post("@render:", "draw_line", { start_point = p_tr, end_point = p_tl, color = ARENA_LINE_COLOR })
+	msg.post("@render:", "draw_line", { start_point = p_tl, end_point = p_bl, color = ARENA_LINE_COLOR })
+
+	for y = 200, 440, 80 do
+		msg.post("@render:", "draw_line", {
+			start_point = vmath.vector3(b.min_x, y, 0.0),
+			end_point = vmath.vector3(b.max_x, y, 0.0),
+			color = LANE_LINE_COLOR
+		})
+	end
+end
+
+function update(self, dt)
+	self.time = self.time + dt
+	draw_arena_grid()
+
+	if self.shake_timer > 0.0 then
+		self.shake_timer = math.max(0.0, self.shake_timer - dt)
+		local ox = math.sin(self.time * 95.0) * self.shake_intensity
+		local oy = math.cos(self.time * 110.0) * (self.shake_intensity * 0.6)
+		msg.post("@render:", "clear_color", {
+			color = vmath.vector4(
+				0.11 + math.min(0.06, math.abs(ox) * 0.005),
+				0.13,
+				0.18 + math.min(0.04, math.abs(oy) * 0.005),
+				1.0
+			)
+		})
+	else
+		self.shake_intensity = 0.0
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == HASH_CAMERA_SHAKE then
+		self.shake_intensity = math.max(self.shake_intensity, message.intensity or 4.0)
+		self.shake_timer = math.max(self.shake_timer, message.duration or 0.12)
+	end
+end

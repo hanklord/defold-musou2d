@@ -1,0 +1,108 @@
+local constants = require("shared.constants")
+
+local HASH_UPDATE_HUD = hash("update_hud")
+local HASH_DUMMY_HIT = hash("dummy_hit")
+
+local BAR_MAX_WIDTH = 280.0
+local BAR_HEIGHT = 18.0
+
+local CHAIN_HINTS = {
+	idle = "NEXT: [J] Light N1  |  [K] Heavy C1  |  [L] Dash  |  [U] Musou",
+	run = "NEXT: [J] Dash Slash N1  |  [K] Heavy C1  |  [L] Dash",
+	attack_1 = "COMBO WINDOW: [J] Chain N2  |  [K] Derive C2  |  [L] Dash Cancel",
+	attack_2 = "COMBO WINDOW: [J] Chain N3  |  [K] Derive C3  |  [L] Dash Cancel",
+	attack_3 = "FINISHER WINDOW: [K] Derive C4 Slam!  |  [L] Dash Cancel",
+	charge_attack = "HEAVY ACTIVE: [L] Dash Cancel Recovery  |  [U] Musou Cancel",
+	dash = "DASH I-FRAMES ACTIVE (0.25s INVULNERABLE)",
+	musou_skill = "MUSOU RAMPAGE ACTIVE! (SUPER ARMOR + OMNIDIRECTIONAL SLASH)",
+	hit = "HIT STUNNED! RECOVERING..."
+}
+
+function init(self)
+	self.hp_fill = gui.get_node("hp_bar_fill")
+	self.hp_text = gui.get_node("hp_text")
+	self.musou_fill = gui.get_node("musou_bar_fill")
+	self.musou_text = gui.get_node("musou_text")
+	self.state_text = gui.get_node("state_text")
+	self.chain_hint_text = gui.get_node("chain_hint_text")
+	self.combo_text = gui.get_node("combo_text")
+	self.damage_text = gui.get_node("damage_text")
+
+	self.last_combo = 0
+	self.max_combo = 0
+	self.last_damage = 0
+	self.last_tag = "--"
+end
+
+local function update_bars(self, hp, max_hp, musou, max_musou)
+	local hp_ratio = math.max(0.0, math.min(1.0, (hp or 100) / math.max(1, max_hp or 100)))
+	gui.set_size(self.hp_fill, vmath.vector3(BAR_MAX_WIDTH * hp_ratio, BAR_HEIGHT, 0.0))
+	gui.set_text(self.hp_text, string.format("HP %d/%d", hp or 100, max_hp or 100))
+
+	local musou_ratio = math.max(0.0, math.min(1.0, (musou or 0) / math.max(1, max_musou or 100)))
+	gui.set_size(self.musou_fill, vmath.vector3(BAR_MAX_WIDTH * musou_ratio, BAR_HEIGHT, 0.0))
+	if (musou or 0) >= (max_musou or 100) then
+		gui.set_text(self.musou_text, "MUSOU MAX [PRESS U]")
+		gui.set_color(self.musou_fill, vmath.vector4(1.0, 0.84, 0.18, 1.0))
+	else
+		gui.set_text(self.musou_text, string.format("MUSOU %d%%", math.floor(musou_ratio * 100)))
+		gui.set_color(self.musou_fill, vmath.vector4(0.28, 0.72, 0.96, 1.0))
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == HASH_UPDATE_HUD then
+		update_bars(self, message.hp, message.max_hp, message.musou, message.max_musou)
+
+		local st = message.state or "idle"
+		local tag = message.attack_tag or "NONE"
+		local spec = constants.ATTACK_SPECS[tag]
+		local move_label = spec and spec.label or tag
+		local invuln_badge = message.invulnerable and " [INVULN]" or ""
+
+		gui.set_text(
+			self.state_text,
+			string.format("STATE: %s  |  ACTION: %s%s", string.upper(st), move_label, invuln_badge)
+		)
+		gui.set_text(self.chain_hint_text, CHAIN_HINTS[st] or CHAIN_HINTS.idle)
+
+		local combo = message.combo or 0
+		if message.max_combo and message.max_combo > self.max_combo then
+			self.max_combo = message.max_combo
+		end
+		gui.set_text(self.combo_text, string.format("%d HIT COMBO", combo))
+
+		if combo > self.last_combo then
+			gui.set_scale(self.combo_text, vmath.vector3(2.05, 2.05, 1.0))
+			gui.animate(
+				self.combo_text,
+				gui.PROP_SCALE,
+				vmath.vector3(1.65, 1.65, 1.0),
+				gui.EASING_OUTBACK,
+				0.22
+			)
+		end
+		self.last_combo = combo
+
+		if message.last_damage and message.last_damage > 0 then
+			self.last_damage = message.last_damage
+		end
+		gui.set_text(
+			self.damage_text,
+			string.format("LAST DMG: %d (%s)  |  MAX COMBO: %d", self.last_damage, self.last_tag, self.max_combo)
+		)
+	elseif message_id == HASH_DUMMY_HIT then
+		self.last_damage = message.damage or self.last_damage
+		self.last_tag = message.attack_tag or self.last_tag
+		gui.set_text(
+			self.damage_text,
+			string.format(
+				"HIT! -%d HP [%s]  |  DUMMY HP: %d/%d",
+				self.last_damage,
+				self.last_tag,
+				message.dummy_hp or 0,
+				message.dummy_max_hp or 200
+			)
+		)
+	end
+end

@@ -1,0 +1,337 @@
+local constants = require("shared.constants")
+local fsm_mod = require("shared.fsm")
+local movement = require("shared.movement")
+local combat_mod = require("shared.combat")
+
+local HASH_MOVE_UP = hash("move_up")
+local HASH_MOVE_DOWN = hash("move_down")
+local HASH_MOVE_LEFT = hash("move_left")
+local HASH_MOVE_RIGHT = hash("move_right")
+local HASH_ATTACK_LIGHT = hash("attack_light")
+local HASH_ATTACK_HEAVY = hash("attack_heavy")
+local HASH_DASH = hash("dash")
+local HASH_MUSOU = hash("musou")
+local HASH_TEST_HIT = hash("test_hit")
+local HASH_APPLY_PLAYER_HIT = hash("apply_player_hit")
+
+local HASH_SPINE_EVENT = hash("spine_event")
+local HASH_SPINE_ANIM_DONE = hash("spine_animation_done")
+
+local HASH_HITBOX_ON = hash("hitbox_on")
+local HASH_HITBOX_OFF = hash("hitbox_off")
+local HASH_FOOTSTEP = hash("footstep")
+local HASH_MUSOU_BURST = hash("musou_burst")
+
+local HASH_TO_TAG = {
+	[hash("N1")] = "N1",
+	[hash("N2")] = "N2",
+	[hash("N3")] = "N3",
+	[hash("CHARGE")] = "CHARGE",
+	[hash("C1")] = "C1",
+	[hash("C2")] = "C2",
+	[hash("C3")] = "C3",
+	[hash("C4")] = "C4",
+	[hash("MUSOU")] = "MUSOU",
+	[hash("step")] = "step",
+	[hash("burst")] = "burst",
+	[hash("")] = ""
+}
+
+local DUMMY_PATHS = {
+	"/dummy_1",
+	"/dummy_2",
+	"/dummy_3"
+}
+
+local function resolve_event_string(raw_str)
+	if type(raw_str) == "string" then
+		return raw_str
+	elseif raw_str ~= nil and HASH_TO_TAG[raw_str] ~= nil then
+		return HASH_TO_TAG[raw_str]
+	end
+	return ""
+end
+
+local function sync_hud(self)
+	msg.post("/hud#hud", "update_hud", {
+		state = self.fsm.state,
+		attack_tag = self.fsm.attack_tag or "NONE",
+		charge_variant = self.fsm.charge_variant or "",
+		combo = self.combat.combo_count,
+		max_combo = self.combat.max_combo,
+		hp = self.combat.hp,
+		max_hp = self.combat.max_hp,
+		musou = self.combat.musou_gauge,
+		max_musou = self.combat.max_musou,
+		last_damage = self.combat.last_damage,
+		invulnerable = self.fsm:is_invulnerable()
+	})
+end
+
+local function update_visual_tint(self)
+	if self.fsm.state == constants.STATES.MUSOU_SKILL then
+		go.set("#spinemodel", "tint", vmath.vector4(1.35, 1.18, 0.55, 1.0))
+	elseif self.fsm.state == constants.STATES.DASH then
+		go.set("#spinemodel", "tint", vmath.vector4(0.65, 1.15, 1.40, 0.90))
+	elseif self.fsm.state == constants.STATES.HIT then
+		go.set("#spinemodel", "tint", vmath.vector4(1.45, 0.45, 0.45, 1.0))
+	elseif self.fsm.state == constants.STATES.CHARGE_ATTACK then
+		go.set("#spinemodel", "tint", vmath.vector4(1.20, 0.90, 0.65, 1.0))
+	else
+		go.set("#spinemodel", "tint", vmath.vector4(1.0, 1.0, 1.0, 1.0))
+	end
+end
+
+local function evaluate_active_hitbox(self)
+	if not self.combat.hitbox.active then
+		return
+	end
+	local targets = {}
+	for i = 1, #DUMMY_PATHS do
+		local path = DUMMY_PATHS[i]
+		local ok, dpos = pcall(go.get_position, path)
+		if ok and dpos then
+			targets[#targets + 1] = {
+				id = path,
+				x = dpos.x,
+				y = dpos.y,
+				alive = true
+			}
+		end
+	end
+
+	local hits = self.combat:evaluate_hits(self.pos, self.facing, targets)
+	if #hits > 0 then
+		self.fsm.musou_gauge = self.combat.musou_gauge
+		for i = 1, #hits do
+			local h = hits[i]
+			msg.post(h.id .. "#script", "apply_hit", {
+				damage = h.damage,
+				knockback_x = h.knockback_x,
+				attack_tag = h.attack_tag,
+				combo = self.combat.combo_count
+			})
+			msg.post("/main#script", "camera_shake", {
+				intensity = math.min(12.0, h.knockback * 3.5),
+				duration = 0.14
+			})
+		end
+		sync_hud(self)
+	end
+end
+
+local function process_spine_event(self, event_name, int_val, float_val, str_val)
+	if event_name == "hitbox_on" then
+		self.combat:on_spine_event("hitbox_on", int_val, float_val, str_val, self.fsm.charge_variant)
+		evaluate_active_hitbox(self)
+		sync_hud(self)
+	elseif event_name == "hitbox_off" then
+		self.combat:on_spine_event("hitbox_off", int_val, float_val, str_val, self.fsm.charge_variant)
+	elseif event_name == "musou_burst" then
+		self.combat:on_spine_event("musou_burst", int_val, float_val, str_val, self.fsm.charge_variant)
+		msg.post("/main#script", "camera_shake", {
+			intensity = 9.0,
+			duration = 0.25
+		})
+	elseif event_name == "footstep" then
+		self.combat:on_spine_event("footstep", int_val, float_val, str_val, self.fsm.charge_variant)
+	end
+end
+
+local play_state_animation
+
+local function spine_callback(self, message_id, message, sender)
+	if message_id == HASH_SPINE_EVENT then
+		local ev_id = message.event_id
+		local str_val = resolve_event_string(message.string)
+		local int_val = message.integer or 0
+		local float_val = message.float or 0.0
+
+		if ev_id == HASH_HITBOX_ON then
+			self.spine_fired_hitbox_on = true
+			process_spine_event(self, "hitbox_on", int_val, float_val, str_val)
+		elseif ev_id == HASH_HITBOX_OFF then
+			self.spine_fired_hitbox_off = true
+			process_spine_event(self, "hitbox_off", int_val, float_val, str_val)
+		elseif ev_id == HASH_MUSOU_BURST then
+			self.spine_fired_burst = true
+			process_spine_event(self, "musou_burst", int_val, float_val, str_val)
+		elseif ev_id == HASH_FOOTSTEP then
+			process_spine_event(self, "footstep", int_val, float_val, str_val)
+		end
+	elseif message_id == HASH_SPINE_ANIM_DONE then
+		local prev_transition = self.fsm.transition_count
+		self.combat:deactivate_hitbox()
+		self.fsm:on_anim_done(self.fsm.state)
+		if self.fsm.transition_count ~= prev_transition then
+			play_state_animation(self, false)
+			sync_hud(self)
+		end
+	end
+end
+
+play_state_animation = function(self, force)
+	local st = self.fsm.state
+	if not force and self.last_played_transition == self.fsm.transition_count and self.current_anim == st then
+		return
+	end
+	self.current_anim = st
+	self.last_played_transition = self.fsm.transition_count
+	self.fired_schedule = {}
+	self.spine_fired_hitbox_on = false
+	self.spine_fired_hitbox_off = false
+	self.spine_fired_burst = false
+	self.combat:deactivate_hitbox()
+
+	local playback = go.PLAYBACK_ONCE_FORWARD
+	if constants.ANIM_PLAYBACK[st] == "LOOP_FORWARD" then
+		playback = go.PLAYBACK_LOOP_FORWARD
+	end
+
+	spine.play_anim("#spinemodel", st, playback, { blend_duration = 0.08 }, spine_callback)
+	update_visual_tint(self)
+end
+
+local function apply_facing_rotation(self)
+	local angle_y = (self.facing < 0) and math.pi or 0.0
+	go.set_rotation(vmath.quat_rotation_y(angle_y))
+end
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.fsm = fsm_mod.new({ musou_gauge = constants.INITIAL_MUSOU })
+	self.combat = combat_mod.new({ musou_gauge = constants.INITIAL_MUSOU })
+
+	local start_pos = go.get_position()
+	local cx, cy, cz = movement.clamp_to_arena(start_pos.x, start_pos.y)
+	self.pos = { x = cx, y = cy, z = cz }
+	go.set_position(vmath.vector3(self.pos.x, self.pos.y, self.pos.z))
+
+	self.facing = 1
+	self.held = { up = false, down = false, left = false, right = false }
+	self.current_anim = nil
+	self.last_played_transition = -1
+	self.fired_schedule = {}
+
+	apply_facing_rotation(self)
+	play_state_animation(self, true)
+	sync_hud(self)
+end
+
+local function check_fallback_event_schedule(self)
+	local schedule = constants.ANIM_EVENTS[self.fsm.state]
+	if not schedule then
+		return
+	end
+	for i = 1, #schedule do
+		local item = schedule[i]
+		if not self.fired_schedule[i] and self.fsm.state_time >= item.time then
+			self.fired_schedule[i] = true
+			if item.event == "hitbox_on" and not self.spine_fired_hitbox_on then
+				process_spine_event(self, "hitbox_on", item.int, item.float, item.string)
+			elseif item.event == "hitbox_off" and not self.spine_fired_hitbox_off then
+				process_spine_event(self, "hitbox_off", item.int, item.float, item.string)
+			elseif item.event == "musou_burst" and not self.spine_fired_burst then
+				process_spine_event(self, "musou_burst", item.int, item.float, item.string)
+			end
+			self.spine_fired_hitbox_on = false
+			self.spine_fired_hitbox_off = false
+		end
+	end
+end
+
+function update(self, dt)
+	local dx = (self.held.right and 1 or 0) - (self.held.left and 1 or 0)
+	local dy = (self.held.up and 1 or 0) - (self.held.down and 1 or 0)
+	local is_moving = (dx ~= 0) or (dy ~= 0)
+
+	self.held.up = false
+	self.held.down = false
+	self.held.left = false
+	self.held.right = false
+
+	local prev_transition = self.fsm.transition_count
+	self.fsm:update(dt, is_moving)
+	self.combat:update(dt)
+
+	if self.fsm.transition_count ~= prev_transition then
+		play_state_animation(self, false)
+	end
+
+	check_fallback_event_schedule(self)
+
+	local new_pos, new_facing = movement.step(
+		self.pos,
+		{ x = dx, y = dy },
+		self.fsm.state,
+		self.facing,
+		dt,
+		self.fsm.state_time
+	)
+	self.pos = new_pos
+	if new_facing ~= self.facing then
+		self.facing = new_facing
+		apply_facing_rotation(self)
+	end
+	go.set_position(vmath.vector3(self.pos.x, self.pos.y, self.pos.z))
+
+	evaluate_active_hitbox(self)
+	sync_hud(self)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == HASH_SPINE_EVENT or message_id == HASH_SPINE_ANIM_DONE then
+		spine_callback(self, message_id, message, sender)
+	elseif message_id == HASH_APPLY_PLAYER_HIT then
+		local prev_t = self.fsm.transition_count
+		if self.fsm:apply_hit() then
+			self.combat:take_damage(message.damage or 10)
+			if self.fsm.transition_count ~= prev_t then
+				play_state_animation(self, false)
+			end
+			sync_hud(self)
+		end
+	end
+end
+
+function on_input(self, action_id, action)
+	if action_id == HASH_MOVE_UP then
+		if not action.released then
+			self.held.up = true
+		end
+	elseif action_id == HASH_MOVE_DOWN then
+		if not action.released then
+			self.held.down = true
+		end
+	elseif action_id == HASH_MOVE_LEFT then
+		if not action.released then
+			self.held.left = true
+		end
+	elseif action_id == HASH_MOVE_RIGHT then
+		if not action.released then
+			self.held.right = true
+		end
+	elseif action.pressed then
+		local prev_t = self.fsm.transition_count
+		if action_id == HASH_ATTACK_LIGHT then
+			self.fsm:press_light()
+		elseif action_id == HASH_ATTACK_HEAVY then
+			self.fsm:press_heavy()
+		elseif action_id == HASH_DASH then
+			self.fsm:press_dash()
+		elseif action_id == HASH_MUSOU then
+			if self.fsm:press_musou(self.combat.musou_gauge) then
+				self.combat:consume_musou(constants.MUSOU_COST)
+			end
+		elseif action_id == HASH_TEST_HIT then
+			if self.fsm:apply_hit() then
+				self.combat:take_damage(8)
+			end
+		end
+
+		if self.fsm.transition_count ~= prev_t then
+			play_state_animation(self, false)
+			sync_hud(self)
+		end
+	end
+end

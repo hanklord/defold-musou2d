@@ -1,0 +1,54 @@
+name: "main"
+scale_along_z: 0
+instances {
+  id: "player"
+  prototype: "/player/player.go"
+  position {
+    x: 400.0
+    y: 300.0
+    z: 0.2
+  }
+}
+instances {
+  id: "dummy_1"
+  prototype: "/enemy/dummy.go"
+  position {
+    x: 720.0
+    y: 320.0
+    z: 0.18
+  }
+}
+instances {
+  id: "dummy_2"
+  prototype: "/enemy/dummy.go"
+  position {
+    x: 840.0
+    y: 260.0
+    z: 0.24
+  }
+}
+instances {
+  id: "dummy_3"
+  prototype: "/enemy/dummy.go"
+  position {
+    x: 800.0
+    y: 380.0
+    z: 0.12
+  }
+}
+embedded_instances {
+  id: "main"
+  data: "components {\n"
+  "  id: \"script\"\n"
+  "  component: \"/main/main.script\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "hud"
+  data: "components {\n"
+  "  id: \"hud\"\n"
+  "  component: \"/hud/hud.gui\"\n"
+  "}\n"
+  ""
+}

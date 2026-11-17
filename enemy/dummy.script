@@ -1,0 +1,107 @@
+local constants = require("shared.constants")
+local movement = require("shared.movement")
+
+local HASH_APPLY_HIT = hash("apply_hit")
+local HASH_SPINE_ANIM_DONE = hash("spine_animation_done")
+
+local BASE_TINT = vmath.vector4(1.0, 0.45, 0.45, 1.0)
+local HIT_FLASH_TINT = vmath.vector4(2.0, 1.65, 1.45, 1.0)
+
+local function dummy_spine_cb(self, message_id, message, sender)
+	if message_id == HASH_SPINE_ANIM_DONE then
+		self.in_hit_anim = false
+		spine.play_anim("#spinemodel", "idle", go.PLAYBACK_LOOP_FORWARD, { blend_duration = 0.12 })
+	end
+end
+
+function init(self)
+	local pos = go.get_position()
+	local cx, cy, cz = movement.clamp_to_arena(pos.x, pos.y)
+	self.home_pos = { x = cx, y = cy, z = cz }
+	self.pos = { x = cx, y = cy, z = cz }
+	go.set_position(vmath.vector3(self.pos.x, self.pos.y, self.pos.z))
+
+	-- Face left (-1) toward the player spawn using Y-axis rotation (no negative scale.x)
+	go.set_rotation(vmath.quat_rotation_y(math.pi))
+	go.set("#spinemodel", "tint", BASE_TINT)
+	spine.play_anim("#spinemodel", "idle", go.PLAYBACK_LOOP_FORWARD, { blend_duration = 0.1 })
+
+	self.max_hp = 200
+	self.hp = self.max_hp
+	self.total_damage_taken = 0
+	self.flash_timer = 0.0
+	self.hit_Timer = 0.0
+	self.return_delay = 0.0
+	self.vel_x = 0.0
+	self.in_hit_anim = false
+end
+
+function update(self, dt)
+	if self.flash_timer > 0.0 then
+		self.flash_timer = self.flash_timer - dt
+		if self.flash_timer <= 0.0 then
+			go.set("#spinemodel", "tint", BASE_TINT)
+		end
+	end
+
+	if self.hit_Timer > 0.0 then
+		self.hit_Timer = self.hit_Timer - dt
+		if self.hit_Timer <= 0.0 and self.in_hit_anim then
+			self.in_hit_anim = false
+			spine.play_anim("#spinemodel", "idle", go.PLAYBACK_LOOP_FORWARD, { blend_duration = 0.12 })
+		end
+	end
+
+	if math.abs(self.vel_x) > 1.0 then
+		self.pos.x = self.pos.x + self.vel_x * dt
+		self.vel_x = self.vel_x * math.max(0.0, 1.0 - 9.0 * dt)
+	else
+		self.vel_x = 0.0
+	end
+
+	if self.return_delay > 0.0 then
+		self.return_delay = self.return_delay - dt
+	else
+		local diff_x = self.home_pos.x - self.pos.x
+		if math.abs(diff_x) > 1.5 then
+			self.pos.x = self.pos.x + diff_x * math.min(1.0, 2.5 * dt)
+		end
+	end
+
+	local cx, cy, cz = movement.clamp_to_arena(self.pos.x, self.pos.y)
+	self.pos.x = cx
+	self.pos.y = cy
+	self.pos.z = cz
+	go.set_position(vmath.vector3(self.pos.x, self.pos.y, self.pos.z))
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == HASH_APPLY_HIT then
+		local dmg = message.damage or 10
+		local kb_x = message.knockback_x or 45.0
+		local tag = message.attack_tag or "N1"
+
+		self.hp = self.hp - dmg
+		self.total_damage_taken = self.total_damage_taken + dmg
+		if self.hp <= 0 then
+			self.hp = self.max_hp
+		end
+
+		self.vel_x = kb_x * 4.5
+		self.flash_timer = 0.14
+		self.hit_Timer = constants.ANIM_DURATION.hit or 0.35
+		self.return_delay = 1.60
+		self.in_hit_anim = true
+
+		go.set("#spinemodel", "tint", HIT_FLASH_TINT)
+		spine.play_anim("#spinemodel", "hit", go.PLAYBACK_ONCE_FORWARD, { blend_duration = 0.04 }, dummy_spine_cb)
+
+		msg.post("/hud#hud", "dummy_hit", {
+			damage = dmg,
+			attack_tag = tag,
+			dummy_hp = self.hp,
+			dummy_max_hp = self.max_hp,
+			total_damage = self.total_damage_taken
+		})
+	end
+end
