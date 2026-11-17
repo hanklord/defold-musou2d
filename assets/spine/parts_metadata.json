@@ -1,0 +1,469 @@
+{
+  "source_image": "/home/tsechingchang/.agend/workspaces/musou2d-lead-t34678/assets/raw/musou2d_hero_input.jpg",
+  "source_size": [
+    1024,
+    1024
+  ],
+  "part_count": 17,
+  "parts": {
+    "head": {
+      "name": "head",
+      "file": "parts/head.png",
+      "source_bbox": [
+        43,
+        31,
+        277,
+        236
+      ],
+      "width": 234,
+      "height": 205,
+      "area_px": 24006,
+      "pivot_norm": [
+        0.72,
+        0.88
+      ],
+      "pivot_px": [
+        168.48,
+        180.4
+      ],
+      "pivot_source_px": [
+        211.48,
+        211.4
+      ],
+      "bone": "head",
+      "slot": "head"
+    },
+    "torso": {
+      "name": "torso",
+      "file": "parts/torso.png",
+      "source_bbox": [
+        140,
+        247,
+        308,
+        480
+      ],
+      "width": 168,
+      "height": 233,
+      "area_px": 30791,
+      "pivot_norm": [
+        0.52,
+        0.9
+      ],
+      "pivot_px": [
+        87.36,
+        209.7
+      ],
+      "pivot_source_px": [
+        227.36,
+        456.7
+      ],
+      "bone": "torso",
+      "slot": "torso"
+    },
+    "arm_upper_r": {
+      "name": "arm_upper_r",
+      "file": "parts/arm_upper_r.png",
+      "source_bbox": [
+        35,
+        247,
+        159,
+        412
+      ],
+      "width": 124,
+      "height": 165,
+      "area_px": 12454,
+      "pivot_norm": [
+        0.76,
+        0.28
+      ],
+      "pivot_px": [
+        94.24,
+        46.2
+      ],
+      "pivot_source_px": [
+        129.24,
+        293.2
+      ],
+      "bone": "arm_r",
+      "slot": "arm_upper_r"
+    },
+    "forearm_r": {
+      "name": "forearm_r",
+      "file": "parts/forearm_r.png",
+      "source_bbox": [
+        35,
+        403,
+        109,
+        587
+      ],
+      "width": 74,
+      "height": 184,
+      "area_px": 8353,
+      "pivot_norm": [
+        0.48,
+        0.12
+      ],
+      "pivot_px": [
+        35.52,
+        22.08
+      ],
+      "pivot_source_px": [
+        70.52,
+        425.08
+      ],
+      "bone": "forearm_r",
+      "slot": "forearm_r"
+    },
+    "arm_upper_l": {
+      "name": "arm_upper_l",
+      "file": "parts/arm_upper_l.png",
+      "source_bbox": [
+        303,
+        252,
+        420,
+        410
+      ],
+      "width": 117,
+      "height": 158,
+      "area_px": 11125,
+      "pivot_norm": [
+        0.25,
+        0.25
+      ],
+      "pivot_px": [
+        29.25,
+        39.5
+      ],
+      "pivot_source_px": [
+        332.25,
+        291.5
+      ],
+      "bone": "arm_l",
+      "slot": "arm_upper_l"
+    },
+    "forearm_l": {
+      "name": "forearm_l",
+      "file": "parts/forearm_l.png",
+      "source_bbox": [
+        358,
+        397,
+        432,
+        504
+      ],
+      "width": 74,
+      "height": 107,
+      "area_px": 4453,
+      "pivot_norm": [
+        0.42,
+        0.16
+      ],
+      "pivot_px": [
+        31.08,
+        17.12
+      ],
+      "pivot_source_px": [
+        389.08,
+        414.12
+      ],
+      "bone": "forearm_l",
+      "slot": "forearm_l"
+    },
+    "hand_1": {
+      "name": "hand_1",
+      "file": "parts/hand_1.png",
+      "source_bbox": [
+        457,
+        347,
+        531,
+        441
+      ],
+      "width": 74,
+      "height": 94,
+      "area_px": 4288,
+      "pivot_norm": [
+        0.45,
+        0.86
+      ],
+      "pivot_px": [
+        33.3,
+        80.84
+      ],
+      "pivot_source_px": [
+        490.3,
+        427.84
+      ],
+      "bone": "hand_l",
+      "slot": "hand_l"
+    },
+    "hand_2": {
+      "name": "hand_2",
+      "file": "parts/hand_2.png",
+      "source_bbox": [
+        556,
+        357,
+        620,
+        434
+      ],
+      "width": 64,
+      "height": 77,
+      "area_px": 3587,
+      "pivot_norm": [
+        0.48,
+        0.18
+      ],
+      "pivot_px": [
+        30.72,
+        13.86
+      ],
+      "pivot_source_px": [
+        586.72,
+        370.86
+      ],
+      "bone": "hand_l",
+      "slot": "hand_l"
+    },
+    "hand_3": {
+      "name": "hand_3",
+      "file": "parts/hand_3.png",
+      "source_bbox": [
+        648,
+        357,
+        714,
+        444
+      ],
+      "width": 66,
+      "height": 87,
+      "area_px": 4157,
+      "pivot_norm": [
+        0.52,
+        0.18
+      ],
+      "pivot_px": [
+        34.32,
+        15.66
+      ],
+      "pivot_source_px": [
+        682.32,
+        372.66
+      ],
+      "bone": "hand_l",
+      "slot": "hand_l"
+    },
+    "hand_4": {
+      "name": "hand_4",
+      "file": "parts/hand_4.png",
+      "source_bbox": [
+        741,
+        358,
+        808,
+        443
+      ],
+      "width": 67,
+      "height": 85,
+      "area_px": 4026,
+      "pivot_norm": [
+        0.45,
+        0.18
+      ],
+      "pivot_px": [
+        30.15,
+        15.3
+      ],
+      "pivot_source_px": [
+        771.15,
+        373.3
+      ],
+      "bone": "hand_l",
+      "slot": "hand_l"
+    },
+    "waist_skirt": {
+      "name": "waist_skirt",
+      "file": "parts/waist_skirt.png",
+      "source_bbox": [
+        394,
+        504,
+        621,
+        727
+      ],
+      "width": 227,
+      "height": 223,
+      "area_px": 32102,
+      "pivot_norm": [
+        0.48,
+        0.14
+      ],
+      "pivot_px": [
+        108.96,
+        31.22
+      ],
+      "pivot_source_px": [
+        502.96,
+        535.22
+      ],
+      "bone": "waist",
+      "slot": "waist_skirt"
+    },
+    "thigh_r": {
+      "name": "thigh_r",
+      "file": "parts/thigh_r.png",
+      "source_bbox": [
+        88,
+        537,
+        221,
+        761
+      ],
+      "width": 133,
+      "height": 224,
+      "area_px": 20186,
+      "pivot_norm": [
+        0.58,
+        0.14
+      ],
+      "pivot_px": [
+        77.14,
+        31.36
+      ],
+      "pivot_source_px": [
+        165.14,
+        568.36
+      ],
+      "bone": "thigh_r",
+      "slot": "thigh_r"
+    },
+    "thigh_l": {
+      "name": "thigh_l",
+      "file": "parts/thigh_l.png",
+      "source_bbox": [
+        234,
+        543,
+        364,
+        759
+      ],
+      "width": 130,
+      "height": 216,
+      "area_px": 18515,
+      "pivot_norm": [
+        0.42,
+        0.14
+      ],
+      "pivot_px": [
+        54.6,
+        30.24
+      ],
+      "pivot_source_px": [
+        288.6,
+        573.24
+      ],
+      "bone": "thigh_l",
+      "slot": "thigh_l"
+    },
+    "shin_r": {
+      "name": "shin_r",
+      "file": "parts/shin_r.png",
+      "source_bbox": [
+        85,
+        742,
+        178,
+        982
+      ],
+      "width": 93,
+      "height": 240,
+      "area_px": 14215,
+      "pivot_norm": [
+        0.5,
+        0.1
+      ],
+      "pivot_px": [
+        46.5,
+        24.0
+      ],
+      "pivot_source_px": [
+        131.5,
+        766.0
+      ],
+      "bone": "shin_r",
+      "slot": "shin_r"
+    },
+    "shin_l": {
+      "name": "shin_l",
+      "file": "parts/shin_l.png",
+      "source_bbox": [
+        262,
+        737,
+        391,
+        969
+      ],
+      "width": 129,
+      "height": 232,
+      "area_px": 14806,
+      "pivot_norm": [
+        0.38,
+        0.1
+      ],
+      "pivot_px": [
+        49.02,
+        23.2
+      ],
+      "pivot_source_px": [
+        311.02,
+        760.2
+      ],
+      "bone": "shin_l",
+      "slot": "shin_l"
+    },
+    "cape": {
+      "name": "cape",
+      "file": "parts/cape.png",
+      "source_bbox": [
+        550,
+        516,
+        884,
+        973
+      ],
+      "width": 334,
+      "height": 457,
+      "area_px": 92007,
+      "pivot_norm": [
+        0.49,
+        0.06
+      ],
+      "pivot_px": [
+        163.66,
+        27.42
+      ],
+      "pivot_source_px": [
+        713.66,
+        543.42
+      ],
+      "bone": "cape",
+      "slot": "cape"
+    },
+    "weapon_guandao": {
+      "name": "weapon_guandao",
+      "file": "parts/weapon_guandao.png",
+      "source_bbox": [
+        852,
+        72,
+        988,
+        972
+      ],
+      "width": 136,
+      "height": 900,
+      "area_px": 31006,
+      "pivot_norm": [
+        0.62,
+        0.58
+      ],
+      "pivot_px": [
+        84.32,
+        522.0
+      ],
+      "pivot_source_px": [
+        936.32,
+        594.0
+      ],
+      "bone": "weapon_guandao",
+      "slot": "weapon_guandao"
+    }
+  }
+}

@@ -1,0 +1,2190 @@
+{
+  "skeleton": {
+    "hash": "musou2d_hero_v1",
+    "spine": "4.2.00",
+    "x": -128,
+    "y": 0,
+    "width": 256,
+    "height": 280
+  },
+  "bones": [
+    {
+      "name": "root",
+      "x": 0.0,
+      "y": 0.0
+    },
+    {
+      "name": "hip",
+      "parent": "root",
+      "x": 0.0,
+      "y": 122.0,
+      "length": 20.0
+    },
+    {
+      "name": "torso",
+      "parent": "hip",
+      "x": 0.0,
+      "y": 6.0,
+      "length": 68.0
+    },
+    {
+      "name": "head",
+      "parent": "torso",
+      "x": 4.0,
+      "y": 66.0,
+      "length": 48.0
+    },
+    {
+      "name": "cape",
+      "parent": "torso",
+      "x": -8.0,
+      "y": 58.0,
+      "length": 110.0
+    },
+    {
+      "name": "waist",
+      "parent": "torso",
+      "x": 0.0,
+      "y": -2.0,
+      "length": 45.0
+    },
+    {
+      "name": "arm_r",
+      "parent": "torso",
+      "x": -28.0,
+      "y": 52.0,
+      "length": 40.0
+    },
+    {
+      "name": "forearm_r",
+      "parent": "arm_r",
+      "x": -16.0,
+      "y": -34.0,
+      "length": 42.0
+    },
+    {
+      "name": "hand_r",
+      "parent": "forearm_r",
+      "x": 2.0,
+      "y": -42.0,
+      "length": 18.0
+    },
+    {
+      "name": "weapon_guandao",
+      "parent": "hand_r",
+      "x": 42.0,
+      "y": 12.0,
+      "length": 180.0
+    },
+    {
+      "name": "arm_l",
+      "parent": "torso",
+      "x": 26.0,
+      "y": 50.0,
+      "length": 38.0
+    },
+    {
+      "name": "forearm_l",
+      "parent": "arm_l",
+      "x": 14.0,
+      "y": -32.0,
+      "length": 34.0
+    },
+    {
+      "name": "hand_l",
+      "parent": "forearm_l",
+      "x": 8.0,
+      "y": -26.0,
+      "length": 20.0
+    },
+    {
+      "name": "thigh_r",
+      "parent": "hip",
+      "x": -16.0,
+      "y": -6.0,
+      "length": 54.0
+    },
+    {
+      "name": "shin_r",
+      "parent": "thigh_r",
+      "x": -4.0,
+      "y": -52.0,
+      "length": 58.0
+    },
+    {
+      "name": "thigh_l",
+      "parent": "hip",
+      "x": 16.0,
+      "y": -6.0,
+      "length": 54.0
+    },
+    {
+      "name": "shin_l",
+      "parent": "thigh_l",
+      "x": 6.0,
+      "y": -52.0,
+      "length": 58.0
+    }
+  ],
+  "slots": [
+    {
+      "name": "cape",
+      "bone": "cape",
+      "attachment": "cape"
+    },
+    {
+      "name": "arm_upper_l",
+      "bone": "arm_l",
+      "attachment": "arm_upper_l"
+    },
+    {
+      "name": "forearm_l",
+      "bone": "forearm_l",
+      "attachment": "forearm_l"
+    },
+    {
+      "name": "hand_l",
+      "bone": "hand_l",
+      "attachment": "hand_1"
+    },
+    {
+      "name": "thigh_r",
+      "bone": "thigh_r",
+      "attachment": "thigh_r"
+    },
+    {
+      "name": "shin_r",
+      "bone": "shin_r",
+      "attachment": "shin_r"
+    },
+    {
+      "name": "thigh_l",
+      "bone": "thigh_l",
+      "attachment": "thigh_l"
+    },
+    {
+      "name": "shin_l",
+      "bone": "shin_l",
+      "attachment": "shin_l"
+    },
+    {
+      "name": "torso",
+      "bone": "torso",
+      "attachment": "torso"
+    },
+    {
+      "name": "waist_skirt",
+      "bone": "waist",
+      "attachment": "waist_skirt"
+    },
+    {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    },
+    {
+      "name": "arm_upper_r",
+      "bone": "arm_r",
+      "attachment": "arm_upper_r"
+    },
+    {
+      "name": "weapon_guandao",
+      "bone": "weapon_guandao",
+      "attachment": "weapon_guandao"
+    },
+    {
+      "name": "forearm_r",
+      "bone": "forearm_r",
+      "attachment": "forearm_r"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "head": {
+          "head": {
+            "x": -19.56,
+            "y": 29.6,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 234,
+            "height": 205
+          }
+        },
+        "torso": {
+          "torso": {
+            "x": -1.28,
+            "y": 35.42,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 168,
+            "height": 233
+          }
+        },
+        "arm_upper_r": {
+          "arm_upper_r": {
+            "x": -12.25,
+            "y": -13.79,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 124,
+            "height": 165
+          }
+        },
+        "forearm_r": {
+          "forearm_r": {
+            "x": 0.56,
+            "y": -26.57,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 74,
+            "height": 184
+          }
+        },
+        "arm_upper_l": {
+          "arm_upper_l": {
+            "x": 11.12,
+            "y": -15.01,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 117,
+            "height": 158
+          }
+        },
+        "forearm_l": {
+          "forearm_l": {
+            "x": 2.25,
+            "y": -13.82,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 74,
+            "height": 107
+          }
+        },
+        "hand_l": {
+          "hand_1": {
+            "x": 1.41,
+            "y": 12.86,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 74,
+            "height": 94
+          },
+          "hand_2": {
+            "x": 0.49,
+            "y": -9.36,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 64,
+            "height": 77
+          },
+          "hand_3": {
+            "x": -0.5,
+            "y": -10.58,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 66,
+            "height": 87
+          },
+          "hand_4": {
+            "x": 1.27,
+            "y": -10.34,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 67,
+            "height": 85
+          }
+        },
+        "waist_skirt": {
+          "waist_skirt": {
+            "x": 1.73,
+            "y": -30.51,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 227,
+            "height": 223
+          }
+        },
+        "thigh_r": {
+          "thigh_r": {
+            "x": -4.04,
+            "y": -30.64,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 133,
+            "height": 224
+          }
+        },
+        "thigh_l": {
+          "thigh_l": {
+            "x": 3.95,
+            "y": -29.55,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 130,
+            "height": 216
+          }
+        },
+        "shin_r": {
+          "shin_r": {
+            "x": 0.0,
+            "y": -36.48,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 93,
+            "height": 240
+          }
+        },
+        "shin_l": {
+          "shin_l": {
+            "x": 5.88,
+            "y": -35.26,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 129,
+            "height": 232
+          }
+        },
+        "cape": {
+          "cape": {
+            "x": 1.27,
+            "y": -76.41,
+            "rotation": 0.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 334,
+            "height": 457
+          }
+        },
+        "weapon_guandao": {
+          "weapon_guandao": {
+            "x": 5.94,
+            "y": 27.42,
+            "rotation": -25.0,
+            "scaleX": 0.38,
+            "scaleY": 0.38,
+            "width": 136,
+            "height": 900
+          }
+        }
+      }
+    }
+  ],
+  "events": {
+    "hitbox_on": {
+      "int": 10,
+      "float": 1.0,
+      "string": "N1"
+    },
+    "hitbox_off": {
+      "int": 0,
+      "float": 0.0,
+      "string": ""
+    },
+    "footstep": {
+      "int": 1,
+      "float": 0.0,
+      "string": "step"
+    },
+    "musou_burst": {
+      "int": 1,
+      "float": 2.5,
+      "string": "burst"
+    }
+  },
+  "animations": {
+    "idle": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_1"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.6,
+              "x": 0.0,
+              "y": 3.5
+            },
+            {
+              "time": 1.2,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": -2.0
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        },
+        "head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": 2.5
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": 5.0
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        },
+        "waist": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": 1.5
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": 4.0
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        },
+        "forearm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": 3.0
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": -3.5
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.6,
+              "value": -3.5
+            },
+            {
+              "time": 1.2,
+              "value": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "run": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_2"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 2.0
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": -5.0
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": 4.0
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": -5.0
+            },
+            {
+              "time": 0.6,
+              "x": 0.0,
+              "y": 2.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -12.0
+            },
+            {
+              "time": 0.3,
+              "value": -15.0
+            },
+            {
+              "time": 0.6,
+              "value": -12.0
+            }
+          ]
+        },
+        "head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 10.0
+            },
+            {
+              "time": 0.3,
+              "value": 13.0
+            },
+            {
+              "time": 0.6,
+              "value": 10.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -24.0
+            },
+            {
+              "time": 0.3,
+              "value": -32.0
+            },
+            {
+              "time": 0.6,
+              "value": -24.0
+            }
+          ]
+        },
+        "waist": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 6.0
+            },
+            {
+              "time": 0.3,
+              "value": -6.0
+            },
+            {
+              "time": 0.6,
+              "value": 6.0
+            }
+          ]
+        },
+        "thigh_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 36.0
+            },
+            {
+              "time": 0.3,
+              "value": -34.0
+            },
+            {
+              "time": 0.6,
+              "value": 36.0
+            }
+          ]
+        },
+        "shin_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -12.0
+            },
+            {
+              "time": 0.15,
+              "value": -38.0
+            },
+            {
+              "time": 0.3,
+              "value": -20.0
+            },
+            {
+              "time": 0.6,
+              "value": -12.0
+            }
+          ]
+        },
+        "thigh_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -34.0
+            },
+            {
+              "time": 0.3,
+              "value": 36.0
+            },
+            {
+              "time": 0.6,
+              "value": -34.0
+            }
+          ]
+        },
+        "shin_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -20.0
+            },
+            {
+              "time": 0.3,
+              "value": -12.0
+            },
+            {
+              "time": 0.45,
+              "value": -38.0
+            },
+            {
+              "time": 0.6,
+              "value": -20.0
+            }
+          ]
+        },
+        "arm_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -28.0
+            },
+            {
+              "time": 0.3,
+              "value": 28.0
+            },
+            {
+              "time": 0.6,
+              "value": -28.0
+            }
+          ]
+        },
+        "forearm_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 18.0
+            },
+            {
+              "time": 0.3,
+              "value": 32.0
+            },
+            {
+              "time": 0.6,
+              "value": 18.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 18.0
+            },
+            {
+              "time": 0.3,
+              "value": -18.0
+            },
+            {
+              "time": 0.6,
+              "value": 18.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -14.0
+            },
+            {
+              "time": 0.3,
+              "value": -6.0
+            },
+            {
+              "time": 0.6,
+              "value": -14.0
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "time": 0.15,
+          "name": "footstep",
+          "int": 1,
+          "float": 0.0,
+          "string": "left"
+        },
+        {
+          "time": 0.45,
+          "name": "footstep",
+          "int": 2,
+          "float": 0.0,
+          "string": "right"
+        }
+      ]
+    },
+    "attack_1": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_3"
+            },
+            {
+              "time": 0.35,
+              "name": "hand_1"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.14,
+              "x": 14.0,
+              "y": -4.0
+            },
+            {
+              "time": 0.3,
+              "x": 18.0,
+              "y": -4.0
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 14.0
+            },
+            {
+              "time": 0.18,
+              "value": -18.0
+            },
+            {
+              "time": 0.32,
+              "value": -12.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 52.0
+            },
+            {
+              "time": 0.18,
+              "value": -58.0
+            },
+            {
+              "time": 0.32,
+              "value": -38.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "forearm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 26.0
+            },
+            {
+              "time": 0.18,
+              "value": -32.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 45.0
+            },
+            {
+              "time": 0.18,
+              "value": -78.0
+            },
+            {
+              "time": 0.32,
+              "value": -55.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.14,
+              "value": -35.0
+            },
+            {
+              "time": 0.3,
+              "value": 24.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.18,
+              "value": -28.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "thigh_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.14,
+              "value": 22.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "time": 0.14,
+          "name": "hitbox_on",
+          "int": 12,
+          "float": 1.0,
+          "string": "N1"
+        },
+        {
+          "time": 0.3,
+          "name": "hitbox_off",
+          "int": 0,
+          "float": 0.0,
+          "string": ""
+        }
+      ]
+    },
+    "attack_2": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_4"
+            },
+            {
+              "time": 0.36,
+              "name": "hand_1"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": -3.0
+            },
+            {
+              "time": 0.14,
+              "x": 18.0,
+              "y": 5.0
+            },
+            {
+              "time": 0.32,
+              "x": 12.0,
+              "y": 2.0
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -12.0
+            },
+            {
+              "time": 0.14,
+              "value": 16.0
+            },
+            {
+              "time": 0.32,
+              "value": 8.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -45.0
+            },
+            {
+              "time": 0.14,
+              "value": 64.0
+            },
+            {
+              "time": 0.32,
+              "value": 42.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "forearm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -24.0
+            },
+            {
+              "time": 0.14,
+              "value": 38.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -65.0
+            },
+            {
+              "time": 0.14,
+              "value": 72.0
+            },
+            {
+              "time": 0.32,
+              "value": 48.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 20.0
+            },
+            {
+              "time": 0.14,
+              "value": -42.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -15.0
+            },
+            {
+              "time": 0.2,
+              "value": -34.0
+            },
+            {
+              "time": 0.45,
+              "value": 0.0
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "time": 0.14,
+          "name": "hitbox_on",
+          "int": 15,
+          "float": 1.2,
+          "string": "N2"
+        },
+        {
+          "time": 0.32,
+          "name": "hitbox_off",
+          "int": 0,
+          "float": 0.0,
+          "string": ""
+        }
+      ]
+    },
+    "attack_3": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_3"
+            },
+            {
+              "time": 0.18,
+              "name": "hand_4"
+            },
+            {
+              "time": 0.45,
+              "name": "hand_1"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.12,
+              "x": -8.0,
+              "y": 6.0
+            },
+            {
+              "time": 0.22,
+              "x": 26.0,
+              "y": -6.0
+            },
+            {
+              "time": 0.55,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 18.0
+            },
+            {
+              "time": 0.18,
+              "value": -26.0
+            },
+            {
+              "time": 0.4,
+              "value": -14.0
+            },
+            {
+              "time": 0.55,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 72.0
+            },
+            {
+              "time": 0.18,
+              "value": -86.0
+            },
+            {
+              "time": 0.4,
+              "value": -48.0
+            },
+            {
+              "time": 0.55,
+              "value": 0.0
+            }
+          ]
+        },
+        "forearm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 35.0
+            },
+            {
+              "time": 0.18,
+              "value": -45.0
+            },
+            {
+              "time": 0.55,
+              "value": 0.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 85.0
+            },
+            {
+              "time": 0.18,
+              "value": -110.0
+            },
+            {
+              "time": 0.4,
+              "value": -70.0
+            },
+            {
+              "time": 0.55,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 15.0
+            },
+            {
+              "time": 0.22,
+              "value": -48.0
+            },
+            {
+              "time": 0.55,
+              "value": 0.0
+            }
+          ]
+        },
+        "thigh_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": -15.0
+            },
+            {
+              "time": 0.22,
+              "value": 32.0
+            },
+            {
+              "time": 0.55,
+              "value": 0.0
+            }
+          ]
+        },
+        "thigh_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 15.0
+            },
+            {
+              "time": 0.22,
+              "value": -28.0
+            },
+            {
+              "time": 0.55,
+              "value": 0.0
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "time": 0.18,
+          "name": "hitbox_on",
+          "int": 22,
+          "float": 1.6,
+          "string": "N3"
+        },
+        {
+          "time": 0.4,
+          "name": "hitbox_off",
+          "int": 0,
+          "float": 0.0,
+          "string": ""
+        }
+      ]
+    },
+    "charge_attack": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_2"
+            },
+            {
+              "time": 0.55,
+              "name": "hand_1"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.15,
+              "x": -6.0,
+              "y": 28.0
+            },
+            {
+              "time": 0.24,
+              "x": 24.0,
+              "y": -10.0
+            },
+            {
+              "time": 0.48,
+              "x": 20.0,
+              "y": -8.0
+            },
+            {
+              "time": 0.7,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.15,
+              "value": 22.0
+            },
+            {
+              "time": 0.24,
+              "value": -28.0
+            },
+            {
+              "time": 0.48,
+              "value": -18.0
+            },
+            {
+              "time": 0.7,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.15,
+              "value": 88.0
+            },
+            {
+              "time": 0.24,
+              "value": -92.0
+            },
+            {
+              "time": 0.48,
+              "value": -68.0
+            },
+            {
+              "time": 0.7,
+              "value": 0.0
+            }
+          ]
+        },
+        "forearm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.15,
+              "value": 42.0
+            },
+            {
+              "time": 0.24,
+              "value": -46.0
+            },
+            {
+              "time": 0.7,
+              "value": 0.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.15,
+              "value": 95.0
+            },
+            {
+              "time": 0.24,
+              "value": -120.0
+            },
+            {
+              "time": 0.48,
+              "value": -95.0
+            },
+            {
+              "time": 0.7,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.15,
+              "value": 28.0
+            },
+            {
+              "time": 0.28,
+              "value": -55.0
+            },
+            {
+              "time": 0.7,
+              "value": 0.0
+            }
+          ]
+        },
+        "thigh_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.15,
+              "value": 36.0
+            },
+            {
+              "time": 0.24,
+              "value": -24.0
+            },
+            {
+              "time": 0.7,
+              "value": 0.0
+            }
+          ]
+        },
+        "shin_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.15,
+              "value": -35.0
+            },
+            {
+              "time": 0.24,
+              "value": 12.0
+            },
+            {
+              "time": 0.7,
+              "value": 0.0
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "time": 0.22,
+          "name": "hitbox_on",
+          "int": 32,
+          "float": 2.2,
+          "string": "CHARGE"
+        },
+        {
+          "time": 0.48,
+          "name": "hitbox_off",
+          "int": 0,
+          "float": 0.0,
+          "string": ""
+        }
+      ]
+    },
+    "dash": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_1"
+            }
+          ]
+        },
+        "cape": {
+          "rgba": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.12,
+              "color": "88ccffdd"
+            },
+            {
+              "time": 0.32,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.1,
+              "x": 22.0,
+              "y": -14.0
+            },
+            {
+              "time": 0.22,
+              "x": 16.0,
+              "y": -10.0
+            },
+            {
+              "time": 0.32,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": -26.0
+            },
+            {
+              "time": 0.22,
+              "value": -20.0
+            },
+            {
+              "time": 0.32,
+              "value": 0.0
+            }
+          ]
+        },
+        "head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 20.0
+            },
+            {
+              "time": 0.32,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.12,
+              "value": -58.0
+            },
+            {
+              "time": 0.24,
+              "value": -42.0
+            },
+            {
+              "time": 0.32,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.12,
+              "value": 38.0
+            },
+            {
+              "time": 0.32,
+              "value": 0.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.12,
+              "value": 28.0
+            },
+            {
+              "time": 0.32,
+              "value": 0.0
+            }
+          ]
+        },
+        "thigh_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.12,
+              "value": 42.0
+            },
+            {
+              "time": 0.32,
+              "value": 0.0
+            }
+          ]
+        },
+        "thigh_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.12,
+              "value": -38.0
+            },
+            {
+              "time": 0.32,
+              "value": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "musou_skill": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_2"
+            },
+            {
+              "time": 0.22,
+              "name": "hand_3"
+            },
+            {
+              "time": 0.52,
+              "name": "hand_4"
+            },
+            {
+              "time": 0.88,
+              "name": "hand_2"
+            },
+            {
+              "time": 1.25,
+              "name": "hand_1"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.08,
+              "x": 0.0,
+              "y": 14.0
+            },
+            {
+              "time": 0.24,
+              "x": 18.0,
+              "y": -4.0
+            },
+            {
+              "time": 0.54,
+              "x": 24.0,
+              "y": 6.0
+            },
+            {
+              "time": 0.75,
+              "x": -8.0,
+              "y": 32.0
+            },
+            {
+              "time": 0.92,
+              "x": 32.0,
+              "y": -12.0
+            },
+            {
+              "time": 1.4,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.08,
+              "value": 18.0
+            },
+            {
+              "time": 0.24,
+              "value": -22.0
+            },
+            {
+              "time": 0.54,
+              "value": 20.0
+            },
+            {
+              "time": 0.75,
+              "value": 26.0
+            },
+            {
+              "time": 0.92,
+              "value": -32.0
+            },
+            {
+              "time": 1.4,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.08,
+              "value": 65.0
+            },
+            {
+              "time": 0.24,
+              "value": -75.0
+            },
+            {
+              "time": 0.42,
+              "value": 55.0
+            },
+            {
+              "time": 0.54,
+              "value": -68.0
+            },
+            {
+              "time": 0.75,
+              "value": 92.0
+            },
+            {
+              "time": 0.92,
+              "value": -98.0
+            },
+            {
+              "time": 1.4,
+              "value": 0.0
+            }
+          ]
+        },
+        "forearm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.24,
+              "value": -38.0
+            },
+            {
+              "time": 0.54,
+              "value": 42.0
+            },
+            {
+              "time": 0.75,
+              "value": 45.0
+            },
+            {
+              "time": 0.92,
+              "value": -48.0
+            },
+            {
+              "time": 1.4,
+              "value": 0.0
+            }
+          ]
+        },
+        "weapon_guandao": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.08,
+              "value": 75.0
+            },
+            {
+              "time": 0.24,
+              "value": -95.0
+            },
+            {
+              "time": 0.42,
+              "value": 70.0
+            },
+            {
+              "time": 0.54,
+              "value": -85.0
+            },
+            {
+              "time": 0.75,
+              "value": 105.0
+            },
+            {
+              "time": 0.92,
+              "value": -125.0
+            },
+            {
+              "time": 1.4,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.08,
+              "value": -42.0
+            },
+            {
+              "time": 0.54,
+              "value": -52.0
+            },
+            {
+              "time": 0.92,
+              "value": -64.0
+            },
+            {
+              "time": 1.4,
+              "value": 0.0
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "time": 0.08,
+          "name": "musou_burst",
+          "int": 1,
+          "float": 2.5,
+          "string": "burst"
+        },
+        {
+          "time": 0.22,
+          "name": "hitbox_on",
+          "int": 28,
+          "float": 2.5,
+          "string": "MUSOU"
+        },
+        {
+          "time": 0.38,
+          "name": "hitbox_off",
+          "int": 0,
+          "float": 0.0,
+          "string": ""
+        },
+        {
+          "time": 0.52,
+          "name": "hitbox_on",
+          "int": 28,
+          "float": 2.5,
+          "string": "MUSOU"
+        },
+        {
+          "time": 0.68,
+          "name": "hitbox_off",
+          "int": 0,
+          "float": 0.0,
+          "string": ""
+        },
+        {
+          "time": 0.88,
+          "name": "hitbox_on",
+          "int": 28,
+          "float": 2.5,
+          "string": "MUSOU"
+        },
+        {
+          "time": 1.15,
+          "name": "hitbox_off",
+          "int": 0,
+          "float": 0.0,
+          "string": ""
+        }
+      ]
+    },
+    "hit": {
+      "slots": {
+        "hand_l": {
+          "attachment": [
+            {
+              "time": 0.0,
+              "name": "hand_1"
+            }
+          ]
+        },
+        "torso": {
+          "rgba": [
+            {
+              "time": 0.0,
+              "color": "ff6666ff"
+            },
+            {
+              "time": 0.18,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hip": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.1,
+              "x": -14.0,
+              "y": 4.0
+            },
+            {
+              "time": 0.22,
+              "x": -10.0,
+              "y": 2.0
+            },
+            {
+              "time": 0.35,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "torso": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 20.0
+            },
+            {
+              "time": 0.22,
+              "value": 14.0
+            },
+            {
+              "time": 0.35,
+              "value": 0.0
+            }
+          ]
+        },
+        "head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 24.0
+            },
+            {
+              "time": 0.22,
+              "value": 16.0
+            },
+            {
+              "time": 0.35,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_r": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": 36.0
+            },
+            {
+              "time": 0.35,
+              "value": 0.0
+            }
+          ]
+        },
+        "arm_l": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.1,
+              "value": -34.0
+            },
+            {
+              "time": 0.35,
+              "value": 0.0
+            }
+          ]
+        },
+        "cape": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "value": 0.0
+            },
+            {
+              "time": 0.12,
+              "value": 22.0
+            },
+            {
+              "time": 0.35,
+              "value": 0.0
+            }
+          ]
+        }
+      }
+    }
+  }
+}
