@@ -27,8 +27,8 @@ if [ -z "$ENGINE_BIN" ]; then
 fi
 
 ENGINE_DIR="$(dirname "$ENGINE_BIN")"
-LOG_FILE="/tmp/musou2d_engine_boot.log"
-rm -f "$LOG_FILE"
+LOG_FILE="$(mktemp -t musou2d_engine_boot.XXXXXX.log)"
+trap 'rm -f "$LOG_FILE"' EXIT
 
 echo "=== Running engine binary ($ENGINE_BIN) to capture boot log ==="
 set +e

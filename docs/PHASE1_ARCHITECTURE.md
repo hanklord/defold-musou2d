@@ -5,8 +5,9 @@
 
 ### 1.1 技術棧與工具鏈鐵律
 - **引擎版本**：Defold 1.13.2（`~/defold-tools/bob.jar` + `~/defold-tools/jdk-25.0.4.1+1`）
-- **Spine 擴充套件**：`extension-spine` `4.9.4`
-  - Dependency URL：`https://github.com/defold/extension-spine/archive/refs/tags/4.9.4.zip`
+- **Spine 擴充套件**：`extension-spine` `4.8.0`
+  - Dependency URL：`https://github.com/defold/extension-spine/archive/refs/tags/4.8.0.zip`
+  - 版本選擇理由：4.8.0 是對應 Defold 1.13.2 的最後一版；4.9.x 起要求 Defold 1.14.0+，與鎖定的 1.13.2 工具鏈不相容。升級 Defold 時再一併升級 extension-spine。
   - **目標 Spine Runtime 版本**：**Spine 4.2**（`"spine": "4.2.00"`）
 - **Defold 專案鐵律**：
   1. `game.project` 的 `[input] game_binding` 必須設為編譯後路徑 `/input/game.input_bindingc`。
@@ -20,7 +21,7 @@
 
 ```text
 musou2d/
-├── game.project                      # [Lead] 專案設定、extension-spine 4.9.4 依賴
+├── game.project                      # [Lead] 專案設定、extension-spine 4.8.0 依賴
 ├── input/
 │   └── game.input_binding            # [Lead] 鍵盤/滑鼠輸入映射
 ├── main/
@@ -96,7 +97,7 @@ python3 tools/auto_rig_spine.py \
 17. **`weapon` / `guandao`**（最右側垂直長柄關刀完整武器，綁定於 `weapon` 骨骼）
 
 ### 3.3 Spine 4.2 骨骼階層與嚴格格式規範 (`hero.spinejson`)
-`extension-spine` 4.9.4 內建 Spine 4.2 C Runtime (`SkeletonJson.c`)，生成的 `.spinejson` **必須嚴格遵守 Spine 4.2 JSON 規範**：
+`extension-spine` 4.8.0 內建 Spine 4.2 C Runtime (`SkeletonJson.c`)，生成的 `.spinejson` **必須嚴格遵守 Spine 4.2 JSON 規範**：
 1. **`skeleton` 標頭**：
    ```json
    "skeleton": {
@@ -146,7 +147,7 @@ python3 tools/auto_rig_spine.py \
    頂層 `"events"` 必須宣告以下 4 個標準事件：
    - `"hitbox_on"`：`{ "int": 10, "float": 1.0, "string": "N1" }`（啟動攻擊判定，`int` 為基礎傷害，`float` 為擊退倍率，`string` 為招式標籤）
    - `"hitbox_off"`：`{ "int": 0, "float": 0.0, "string": "" }`（關閉攻擊判定）
-   - `"footstep"`：`{ "int": 1, "float": 0.0, "string": "step" }`（腳步事件）
+   - `"footstep"`：`{ "int": 1, "float": 0.0, "string": "left" | "right" }`（腳步事件，string 標示左右腳）
    - `"musou_burst"`：`{ "int": 1, "float": 2.5, "string": "burst" }`（無雙覺醒爆發特效事件）
 
 ### 3.4 九大無雙基礎動作規格 (`animations`)
@@ -201,7 +202,7 @@ python3 tools/auto_rig_spine.py \
      - 處理攻擊微幅前踏位移（Attack Step Impulse）與 `dash` 爆發衝刺位移（520 px/s）。
      - 夾限於 `ARENA_BOUNDS` 內，並計算 `z = 0.5 - (pos.y / 1000.0)` 實現 2.5D Y-Sorting 前後遮擋。
 4. **`shared/combat.lua`**：
-   - 管理 Hitbox 啟閉（由 `spine_event` 的 `hitbox_on` / `hitbox_off` 驅動）、2.5D 扇區與 Y 軸深度距離判定 (`|dx| <= range_x` 且方向一致、`|dy| <= 48`)。
+   - 管理 Hitbox 啟閉（由 `spine_event` 的 `hitbox_on` / `hitbox_off` 驅動）、2.5D 扇區與 Y 軸深度距離判定 (`|dx| <= range_x` 且方向一致、`|dy| <= range_y`，`range_y` 依 `ATTACK_SPECS` 每招設定，範圍 48–80)。
    - 管理連擊數 `combo_count`（每次命中 +1，超過 `3.0s` 未命中歸零）與無雙值 `musou_gauge`（初始值 `100` 供開局立即體驗，每次命中回復 `+15`，上限 `100`）。
 
 ### 4.3 Spine 動畫控制與組件訊息介面
@@ -219,7 +220,7 @@ python3 tools/auto_rig_spine.py \
 ## 5. 測試與驗證計畫 (Verification Gates)
 
 1. **Gate 1 — Spine 自動拆圖管線驗證 (`test/test_spine_pipeline.py`)**：
-   - 自動執行 `tools/auto_rig_spine.py`，斷言產出 13 張非空 RGBA 部件 PNG、`hero.atlas`、`hero.spinescene` 與 `hero.spinejson`。
+   - 自動執行 `tools/auto_rig_spine.py`，斷言產出 17 張非空 RGBA 部件 PNG、`hero.atlas`、`hero.spinescene` 與 `hero.spinejson`。
    - 嚴格檢驗 `hero.spinejson`：`"spine"` 版本為 `"4.2.00"`、`skins` 為 `list`、所有 `rotate` 關鍵幀皆使用 `"value"` 而非 `"angle"`、9 個指定動作與 4 個事件完整存在。
 2. **Gate 2 — Headless 純 Lua 單元與整合冒煙測試 (`tools/run-tests.sh`)**：
    - 靜態掃描所有 `.lua` / `.script` / `.gui_script`，禁止 `dofile` / `loadfile` / `io.open` 與非字串常值 `require`。
