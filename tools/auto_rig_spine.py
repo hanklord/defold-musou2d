@@ -654,6 +654,7 @@ def build_spine_42_json(part_meta: Dict[str, Dict]) -> Dict:
     }
 
     animations = _build_9_musou_animations()
+    _apply_weapon_swing_arcs(animations)
 
     return {
         "skeleton": {
@@ -685,6 +686,77 @@ def _rot(frames: List[Tuple[float, float]]) -> List[Dict[str, float]]:
 def _trans(frames: List[Tuple[float, float, float]]) -> List[Dict[str, float]]:
     """Helper producing Spine 4.2 translate timeline keyframes."""
     return [{"time": round(t, 4), "x": round(x, 2), "y": round(y, 2)} for t, x, y in frames]
+
+
+# ---------------------------------------------------------------------------
+# Weapon swing arcs (edge-leading, blade-in-front)
+#
+# The blade attachment is mirrored so its cutting edge faces +X when the
+# polearm stands upright (tip direction phi = 90 deg). For such a blade the edge
+# normal is phi - 90, so the edge leads only when phi DEcreases (clockwise
+# swing). Every attack arc below is therefore authored as a world-space tip
+# angle phi per key (90 up, 0 forward, -90 down, 180 back) and is strictly
+# clockwise across each hitbox_on..hitbox_off window, crossing the front
+# (|phi| < 90) mid-window so the visible blade matches the forward hitbox.
+#
+# Each key: (time, phi, torso, arm_r, forearm_r). weapon_guandao's local
+# rotation is solved so torso+arm+forearm+weapon = phi - 90. All four bones
+# share key times, so phi interpolates linearly (and monotonically) per span.
+# ---------------------------------------------------------------------------
+WEAPON_SWING_ARCS: Dict[str, List[Tuple[float, float, float, float, float]]] = {
+    # N1 overhead diagonal chop: wind up behind the head, chop to front-low.
+    "attack_1": [
+        (0.00, 90.0, 0.0, 0.0, 0.0),
+        (0.12, 150.0, 10.0, 110.0, 20.0),
+        (0.32, -40.0, -15.0, 40.0, -10.0),
+        (0.45, 90.0, 0.0, 0.0, 0.0),
+    ],
+    # N2 big wheel slash: wind low behind, sweep over the top to front-level.
+    "attack_2": [
+        (0.00, 90.0, 0.0, 0.0, 0.0),
+        (0.12, 210.0, 14.0, 70.0, 25.0),
+        (0.34, -15.0, -10.0, 75.0, 0.0),
+        (0.45, 90.0, 0.0, 0.0, 0.0),
+    ],
+    # N3 wide cleave: deepest wind-up, long arc finishing front-down.
+    "attack_3": [
+        (0.00, 90.0, 0.0, 0.0, 0.0),
+        (0.16, 200.0, 18.0, 120.0, 30.0),
+        (0.42, -60.0, -22.0, 35.0, -15.0),
+        (0.55, 90.0, 0.0, 0.0, 0.0),
+    ],
+    # C1 leap smash: raise overhead during the jump, smash into the ground.
+    "charge_attack": [
+        (0.00, 90.0, 0.0, 0.0, 0.0),
+        (0.15, 160.0, 20.0, 130.0, 25.0),
+        (0.20, 170.0, 22.0, 140.0, 28.0),
+        (0.50, -70.0, -25.0, 30.0, -15.0),
+        (0.70, 90.0, 0.0, 0.0, 0.0),
+    ],
+    # Musou: three clockwise slashes with quick counter-clockwise re-winds
+    # between the hitbox windows (0.22-0.38, 0.52-0.68, 0.88-1.15).
+    "musou_skill": [
+        (0.00, 90.0, 0.0, 0.0, 0.0),
+        (0.20, 170.0, 15.0, 110.0, 20.0),
+        (0.40, -30.0, -18.0, 60.0, -5.0),
+        (0.50, 170.0, 15.0, 110.0, 20.0),
+        (0.70, -30.0, -18.0, 60.0, -5.0),
+        (0.85, 190.0, 20.0, 125.0, 25.0),
+        (1.17, -60.0, -25.0, 40.0, -15.0),
+        (1.40, 90.0, 0.0, 0.0, 0.0),
+    ],
+}
+
+
+def _apply_weapon_swing_arcs(animations: Dict[str, Dict]) -> None:
+    for anim_name, keys in WEAPON_SWING_ARCS.items():
+        bones = animations[anim_name]["bones"]
+        bones["torso"] = {"rotate": _rot([(t, torso) for t, _, torso, _, _ in keys])}
+        bones["arm_r"] = {"rotate": _rot([(t, arm) for t, _, _, arm, _ in keys])}
+        bones["forearm_r"] = {"rotate": _rot([(t, fore) for t, _, _, _, fore in keys])}
+        bones["weapon_guandao"] = {
+            "rotate": _rot([(t, (phi - 90.0) - torso - arm - fore) for t, phi, torso, arm, fore in keys])
+        }
 
 
 def _build_9_musou_animations() -> Dict[str, Dict]:

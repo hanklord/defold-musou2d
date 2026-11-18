@@ -6,6 +6,11 @@ auto-rigged hero without launching the engine.
 Usage: python3 tools/render_spine_pose.py <spinejson> <parts_dir> <out.png> [anim[:time] ...]
 Draws each requested pose side by side (default: setup pose), with bone
 origins marked when --bones is passed.
+
+Requires Pillow (same dependency as tools/auto_rig_spine.py):
+    python3 -m pip install --user pillow
+Example:
+    python3 tools/render_spine_pose.py assets/spine/hero.spinejson assets/spine/parts /tmp/pose.png idle:0 attack_1:0.22
 """
 import json
 import math

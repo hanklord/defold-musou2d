@@ -251,6 +251,68 @@ class TestSpinePipeline(unittest.TestCase):
         self.assertAlmostEqual(abs(hand1["rotation"]), 180.0, places=2)
         self.assertLess(hand1["y"], 0.0)
 
+    def test_06_attack_arcs_edge_leading_and_in_front(self) -> None:
+        """With the mirrored blade (edge on +X when upright), every hitbox window
+        must swing clockwise so the cutting edge leads, and the blade tip must
+        be in front of the hip at mid-window to match the forward hitbox."""
+        with open(os.path.join(ROOT_DIR, "assets", "spine", "hero.spinejson"), "r", encoding="utf-8") as f:
+            data = json.load(f)
+        bones = data["bones"]
+        tip_len = 0.58 * 900 * 0.38  # grip pivot -> blade tip along the shaft
+
+        def sample(keys, t):
+            if not keys:
+                return None
+            if t <= keys[0].get("time", 0.0):
+                return keys[0]
+            for a, b in zip(keys, keys[1:]):
+                if a.get("time", 0.0) <= t <= b.get("time", 0.0):
+                    span = b["time"] - a.get("time", 0.0)
+                    u = 0.0 if span == 0 else (t - a.get("time", 0.0)) / span
+                    return {k: a.get(k, 0.0) + (b.get(k, 0.0) - a.get(k, 0.0)) * u for k in ("value", "x", "y")}
+            return keys[-1]
+
+        def fk(anim, t):
+            tl_all = data["animations"][anim].get("bones", {})
+            world = {}
+            for b in bones:
+                tl = tl_all.get(b["name"], {})
+                rot = b.get("rotation", 0.0)
+                x, y = b.get("x", 0.0), b.get("y", 0.0)
+                r = sample(tl.get("rotate"), t)
+                if r:
+                    rot += r.get("value", 0.0)
+                tr = sample(tl.get("translate"), t)
+                if tr:
+                    x += tr.get("x", 0.0)
+                    y += tr.get("y", 0.0)
+                if b.get("parent"):
+                    px, py, prot = world[b["parent"]]
+                    c, s_ = math.cos(math.radians(prot)), math.sin(math.radians(prot))
+                    world[b["name"]] = (px + c * x - s_ * y, py + s_ * x + c * y, prot + rot)
+                else:
+                    world[b["name"]] = (x, y, rot)
+            gx, gy, grot = world["weapon_guandao"]
+            phi = math.radians(grot + 90.0)
+            return (gx + tip_len * math.cos(phi), gy + tip_len * math.sin(phi)), phi, world["hip"]
+
+        dt = 0.005
+        for anim, ev in data["animations"].items():
+            evs = ev.get("events", [])
+            ons = [e["time"] for e in evs if e["name"] == "hitbox_on"]
+            offs = [e["time"] for e in evs if e["name"] == "hitbox_off"]
+            for t_on, t_off in zip(ons, offs):
+                for i in range(1, 5):
+                    t = t_on + (t_off - t_on) * i / 5.0
+                    (x0, y0), _, _ = fk(anim, t - dt)
+                    (x1, y1), phi, hip = fk(anim, t + dt)
+                    vx, vy = x1 - x0, y1 - y0
+                    edge = (math.cos(phi - math.pi / 2), math.sin(phi - math.pi / 2))
+                    dot = (vx * edge[0] + vy * edge[1]) / max(1e-9, math.hypot(vx, vy))
+                    self.assertGreater(dot, 0.5, f"{anim} t={t:.3f}: blade back leads (cos={dot:.2f})")
+                (tx, _), _, hip = fk(anim, (t_on + t_off) / 2.0)
+                self.assertGreater(tx, hip[0], f"{anim} window {t_on}-{t_off}: blade tip behind hip at mid-window")
+
     def test_04_fallback_single_portrait_mode(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             synth_img = os.path.join(tmpdir, "single_portrait.png")
