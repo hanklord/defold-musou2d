@@ -744,17 +744,36 @@ WEAPON_SWING_ARCS: Dict[str, List[Tuple[float, float, float, float, float]]] = {
         (0.50, -70.0, -25.0, 30.0, -15.0),
         (0.70, 90.0, 0.0, 0.0, 0.0),
     ],
-    # Musou: three clockwise slashes with quick counter-clockwise re-winds
-    # between the hitbox windows (0.22-0.38, 0.52-0.68, 0.88-1.15).
+    # Musou: wave 1 and 3 are clockwise chops; wave 2 (0.52-0.68) is a
+    # counter-clockwise rising backhand slash from front-low to overhead, done
+    # with the blade turned over (see WEAPON_EDGE_FLIP) so the edge still leads.
+    # Its finish flows straight into wave 3's wind-up (0.70 -> 0.85).
     "musou_skill": [
         (0.00, 90.0, 0.0, 0.0, 0.0),
         (0.20, 170.0, 15.0, 110.0, 20.0),
         (0.40, -30.0, -18.0, 60.0, -5.0),
-        (0.50, 170.0, 15.0, 110.0, 20.0),
-        (0.70, -30.0, -18.0, 60.0, -5.0),
+        (0.50, -70.0, -15.0, 30.0, -10.0),
+        (0.70, 120.0, 15.0, 140.0, 20.0),
         (0.85, 190.0, 20.0, 125.0, 25.0),
         (1.17, -60.0, -25.0, 40.0, -15.0),
         (1.40, 90.0, 0.0, 0.0, 0.0),
+    ],
+}
+
+
+# Edge flips: weapon_guandao bone scaleX keys (time, sign). A -1 mirrors the
+# blade about the shaft (grip stays on the bone origin), putting the edge on
+# the other side so a counter-clockwise (rising) swing is edge-leading. The
+# 1 <-> -1 change is interpolated over a short span outside hitbox windows,
+# which reads as the polearm being twisted in the hands.
+WEAPON_EDGE_FLIP: Dict[str, List[Tuple[float, float]]] = {
+    "musou_skill": [
+        (0.00, 1.0),
+        (0.42, 1.0),
+        (0.48, -1.0),
+        (0.72, -1.0),
+        (0.80, 1.0),
+        (1.40, 1.0),
     ],
 }
 
@@ -768,6 +787,10 @@ def _apply_weapon_swing_arcs(animations: Dict[str, Dict]) -> None:
         bones["weapon_guandao"] = {
             "rotate": _rot([(t, (phi - 90.0) - torso - arm - fore) for t, phi, torso, arm, fore in keys])
         }
+    for anim_name, flips in WEAPON_EDGE_FLIP.items():
+        animations[anim_name]["bones"]["weapon_guandao"]["scale"] = [
+            {"time": round(t, 4), "x": round(sx, 4), "y": 1.0} for t, sx in flips
+        ]
 
 
 def _build_9_musou_animations() -> Dict[str, Dict]:

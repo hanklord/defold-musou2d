@@ -5,7 +5,8 @@ auto-rigged hero without launching the engine.
 
 Usage: python3 tools/render_spine_pose.py <spinejson> <parts_dir> <out.png> [anim[:time] ...]
 Draws each requested pose side by side (default: setup pose), with bone
-origins marked when --bones is passed.
+origins marked when --bones is passed; --wide uses a larger canvas so long
+weapon reaches are not clipped.
 
 Requires Pillow (same dependency as tools/auto_rig_spine.py):
     python3 -m pip install --user pillow
@@ -133,8 +134,11 @@ def main(argv):
     frames = []
     for p in poses:
         anim, _, ts = p.partition(":")
+        kw = {}
+        if "--wide" in flags:  # room for the full polearm reach on both sides
+            kw = {"size": (560, 440), "origin": (280, 400)}
         frames.append(render(skel, args[1], None if anim == "setup" else anim,
-                             float(ts or 0.0), bones="--bones" in flags))
+                             float(ts or 0.0), bones="--bones" in flags, **kw))
     out = Image.new("RGBA", (sum(f.width for f in frames), frames[0].height))
     x = 0
     for f in frames:

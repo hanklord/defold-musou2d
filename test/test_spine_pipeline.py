@@ -283,7 +283,11 @@ class TestSpinePipeline(unittest.TestCase):
                 if a.get("time", 0.0) <= t <= b.get("time", 0.0):
                     span = b["time"] - a.get("time", 0.0)
                     u = 0.0 if span == 0 else (t - a.get("time", 0.0)) / span
-                    return {k: a.get(k, 0.0) + (b.get(k, 0.0) - a.get(k, 0.0)) * u for k in ("value", "x", "y")}
+                    return {
+                        k: a.get(k, 0.0) + (b.get(k, 0.0) - a.get(k, 0.0)) * u
+                        for k in ("value", "x", "y")
+                        if k in a or k in b
+                    }
             return keys[-1]
 
         def fk(anim, t):
@@ -308,7 +312,11 @@ class TestSpinePipeline(unittest.TestCase):
                     world[b["name"]] = (x, y, rot)
             gx, gy, grot = world["weapon_guandao"]
             phi = math.radians(grot + 90.0)
-            return (gx + tip_len * math.cos(phi), gy + tip_len * math.sin(phi)), phi, world["hip"]
+            # Bone scaleX < 0 turns the blade over: the edge moves to the other
+            # side of the shaft (normal phi + 90 instead of phi - 90).
+            sc = sample(tl_all.get("weapon_guandao", {}).get("scale"), t)
+            flip = -1.0 if (sc and sc.get("x", 1.0) < 0.0) else 1.0
+            return (gx + tip_len * math.cos(phi), gy + tip_len * math.sin(phi)), phi, world["hip"], flip
 
         dt = 0.005
         for anim, ev in data["animations"].items():
@@ -318,13 +326,20 @@ class TestSpinePipeline(unittest.TestCase):
             for t_on, t_off in zip(ons, offs):
                 for i in range(1, 5):
                     t = t_on + (t_off - t_on) * i / 5.0
-                    (x0, y0), _, _ = fk(anim, t - dt)
-                    (x1, y1), phi, hip = fk(anim, t + dt)
+                    (x0, y0), _, _, _ = fk(anim, t - dt)
+                    (x1, y1), phi, hip, flip = fk(anim, t + dt)
                     vx, vy = x1 - x0, y1 - y0
-                    edge = (math.cos(phi - math.pi / 2), math.sin(phi - math.pi / 2))
+                    edge = (math.cos(phi - flip * math.pi / 2), math.sin(phi - flip * math.pi / 2))
                     dot = (vx * edge[0] + vy * edge[1]) / max(1e-9, math.hypot(vx, vy))
                     self.assertGreater(dot, 0.5, f"{anim} t={t:.3f}: blade back leads (cos={dot:.2f})")
-                (tx, _), _, hip = fk(anim, (t_on + t_off) / 2.0)
+                (tx, _), _, hip, _ = fk(anim, (t_on + t_off) / 2.0)
+                # The edge flip (bone scaleX) must be settled at +/-1 for the whole window.
+                for i in range(0, 11):
+                    t = t_on + (t_off - t_on) * i / 10.0
+                    sc = sample(data["animations"][anim]["bones"].get("weapon_guandao", {}).get("scale"), t)
+                    if sc:
+                        self.assertAlmostEqual(abs(sc.get("x", 1.0)), 1.0, places=3,
+                                               msg=f"{anim} t={t:.3f}: blade mid-flip inside hitbox window")
                 self.assertGreater(tx, hip[0], f"{anim} window {t_on}-{t_off}: blade tip behind hip at mid-window")
 
     def test_04_fallback_single_portrait_mode(self) -> None:
