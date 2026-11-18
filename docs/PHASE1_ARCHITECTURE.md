@@ -126,7 +126,7 @@ python3 tools/auto_rig_spine.py \
              - `forearm_r` `(-16, -34)` → slot `forearm_r`
                - `arm_r_lower` *(alias)*
                - `hand_r` `(2, -42)` — 持刀握點（無 slot，見下方說明）
-                 - `weapon_guandao` `(0, 0)` → slot `weapon_guandao`（骨原點 = 握點；attachment `scaleX < 0` 鏡像刀刃使刃口朝 +X 前方，rest rotation 0° 直立）
+                 - `weapon_guandao` `(0, 0)` → slot `weapon_guandao`（骨原點 = 握點；attachment `scaleX < 0` 鏡像刀刃使刃口朝 +X 前方，attachment rest rotation 0°；idle 動畫另加 `IDLE_WEAPON_TILT = -12°` 使刀頭往 +X 前傾，攻擊弧線不受影響）
                    - `weapon` *(alias)*
            - `arm_l` `(26, 50)` → slot `arm_upper_l`
              - `arm_l_upper` *(alias)*

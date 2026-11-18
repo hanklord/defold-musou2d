@@ -703,6 +703,10 @@ def _trans(frames: List[Tuple[float, float, float]]) -> List[Dict[str, float]]:
 # rotation is solved so torso+arm+forearm+weapon = phi - 90. All four bones
 # share key times, so phi interpolates linearly (and monotonically) per span.
 # ---------------------------------------------------------------------------
+# Idle forward lean of the polearm (deg, clockwise). Matches run's -6..-14 range
+# so idle <-> run blends without a visible weapon swing.
+IDLE_WEAPON_TILT = -12.0
+
 WEAPON_SWING_ARCS: Dict[str, List[Tuple[float, float, float, float, float]]] = {
     # N1 overhead diagonal chop: wind up behind the head, chop to front-low.
     "attack_1": [
@@ -789,7 +793,16 @@ def _build_9_musou_animations() -> Dict[str, Dict]:
                     "rotate": _rot([(0.0, 0.0), (0.60, 3.0), (1.20, 0.0)]),
                 },
                 "weapon_guandao": {
-                    "rotate": _rot([(0.0, 0.0), (0.60, -3.5), (1.20, 0.0)]),
+                    # Idle-only forward lean (negative = clockwise = blade head toward +X).
+                    # Kept as an animation offset (not the attachment rest angle) so the
+                    # grip pivot, mirrored edge and all attack arcs stay unchanged.
+                    "rotate": _rot(
+                        [
+                            (0.0, IDLE_WEAPON_TILT),
+                            (0.60, IDLE_WEAPON_TILT - 3.5),
+                            (1.20, IDLE_WEAPON_TILT),
+                        ]
+                    ),
                 },
                 "arm_l": {
                     "rotate": _rot([(0.0, 0.0), (0.60, -3.5), (1.20, 0.0)]),

@@ -246,6 +246,14 @@ class TestSpinePipeline(unittest.TestCase):
             self.assertAlmostEqual(wx, 0.0, delta=0.05, msg=f"{part} pivot x off bone")
             self.assertAlmostEqual(wy, 0.0, delta=0.05, msg=f"{part} pivot y off bone")
 
+        # Idle holds the polearm leaning 10-15 deg forward (+X, clockwise) at rest.
+        idle = data["animations"]["idle"]["bones"]
+        lean = sum(
+            idle.get(b, {}).get("rotate", [{"value": 0.0}])[0]["value"]
+            for b in ("torso", "arm_r", "forearm_r", "weapon_guandao")
+        )
+        self.assertTrue(-15.0 <= lean <= -10.0, f"idle weapon lean {lean} not within -15..-10 deg")
+
         # Open palm is painted fingers-up: it must hang (fingers below the wrist).
         hand1 = atts["hand_l"]["hand_1"]
         self.assertAlmostEqual(abs(hand1["rotation"]), 180.0, places=2)
