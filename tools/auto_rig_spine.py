@@ -703,9 +703,16 @@ def _trans(frames: List[Tuple[float, float, float]]) -> List[Dict[str, float]]:
 # rotation is solved so torso+arm+forearm+weapon = phi - 90. All four bones
 # share key times, so phi interpolates linearly (and monotonically) per span.
 # ---------------------------------------------------------------------------
-# Idle forward lean of the polearm (deg, clockwise). Matches run's -6..-14 range
-# so idle <-> run blends without a visible weapon swing.
-IDLE_WEAPON_TILT = -12.0
+# Idle "ready" stance: polearm leaned 45 deg forward (blade head toward +X,
+# clockwise = negative). At 45 deg a hanging right arm puts the blade beside
+# the face, so the right arm is brought forward/bent (hand at the waist in
+# front of the torso) which carries the blade clear of the head. The weapon
+# bone stays on hand_r (grip error 0) and its local rotation is solved so the
+# world lean is exactly IDLE_WEAPON_LEAN at every idle key (+ a small breath).
+IDLE_WEAPON_LEAN = -45.0
+IDLE_WEAPON_BREATH = -3.5
+IDLE_ARM_R = 25.0
+IDLE_FOREARM_R = 35.0
 
 WEAPON_SWING_ARCS: Dict[str, List[Tuple[float, float, float, float, float]]] = {
     # N1 overhead diagonal chop: wind up behind the head, chop to front-low.
@@ -787,20 +794,23 @@ def _build_9_musou_animations() -> Dict[str, Dict]:
                     "rotate": _rot([(0.0, 0.0), (0.60, 1.5), (1.20, 0.0)]),
                 },
                 "arm_r": {
-                    "rotate": _rot([(0.0, 0.0), (0.60, 4.0), (1.20, 0.0)]),
+                    "rotate": _rot([(0.0, IDLE_ARM_R), (0.60, IDLE_ARM_R + 4.0), (1.20, IDLE_ARM_R)]),
                 },
                 "forearm_r": {
-                    "rotate": _rot([(0.0, 0.0), (0.60, 3.0), (1.20, 0.0)]),
+                    "rotate": _rot([(0.0, IDLE_FOREARM_R), (0.60, IDLE_FOREARM_R + 3.0), (1.20, IDLE_FOREARM_R)]),
                 },
                 "weapon_guandao": {
-                    # Idle-only forward lean (negative = clockwise = blade head toward +X).
-                    # Kept as an animation offset (not the attachment rest angle) so the
-                    # grip pivot, mirrored edge and all attack arcs stay unchanged.
+                    # Solved so torso + arm_r + forearm_r + weapon = IDLE_WEAPON_LEAN
+                    # (+ breath at 0.6s): a pure idle offset; the attachment rest
+                    # angle, grip pivot, mirrored edge and attack arcs are untouched.
                     "rotate": _rot(
                         [
-                            (0.0, IDLE_WEAPON_TILT),
-                            (0.60, IDLE_WEAPON_TILT - 3.5),
-                            (1.20, IDLE_WEAPON_TILT),
+                            (0.0, IDLE_WEAPON_LEAN - (0.0 + IDLE_ARM_R + IDLE_FOREARM_R)),
+                            (
+                                0.60,
+                                IDLE_WEAPON_LEAN + IDLE_WEAPON_BREATH - (-2.0 + IDLE_ARM_R + 4.0 + IDLE_FOREARM_R + 3.0),
+                            ),
+                            (1.20, IDLE_WEAPON_LEAN - (0.0 + IDLE_ARM_R + IDLE_FOREARM_R)),
                         ]
                     ),
                 },

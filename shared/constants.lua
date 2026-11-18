@@ -197,4 +197,17 @@ M.ANIM_EVENTS = {
 	hit = {}
 }
 
+-- Spine cross-fade between animations. idle holds the polearm leaned 45 deg
+-- forward in a two-handed-ready arm pose, while run swings it near upright, so
+-- idle <-> run gets a longer blend to avoid a visible weapon snap.
+M.ANIM_BLEND_DEFAULT = 0.08
+M.ANIM_BLEND_IDLE_RUN = 0.18
+
+function M.anim_blend_duration(from_anim, to_anim)
+	if (from_anim == "idle" and to_anim == "run") or (from_anim == "run" and to_anim == "idle") then
+		return M.ANIM_BLEND_IDLE_RUN
+	end
+	return M.ANIM_BLEND_DEFAULT
+end
+
 return M

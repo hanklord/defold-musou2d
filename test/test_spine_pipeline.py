@@ -246,13 +246,19 @@ class TestSpinePipeline(unittest.TestCase):
             self.assertAlmostEqual(wx, 0.0, delta=0.05, msg=f"{part} pivot x off bone")
             self.assertAlmostEqual(wy, 0.0, delta=0.05, msg=f"{part} pivot y off bone")
 
-        # Idle holds the polearm leaning 10-15 deg forward (+X, clockwise) at rest.
+        # Idle holds the polearm leaning 45 deg (+/-5) forward (+X, clockwise),
+        # sampled at every idle key so the breath never leaves the range.
         idle = data["animations"]["idle"]["bones"]
-        lean = sum(
-            idle.get(b, {}).get("rotate", [{"value": 0.0}])[0]["value"]
-            for b in ("torso", "arm_r", "forearm_r", "weapon_guandao")
-        )
-        self.assertTrue(-15.0 <= lean <= -10.0, f"idle weapon lean {lean} not within -15..-10 deg")
+        chain = ("torso", "arm_r", "forearm_r", "weapon_guandao")
+        key_times = sorted({k["time"] for b in chain for k in idle.get(b, {}).get("rotate", [])})
+        for t in key_times:
+            lean = 0.0
+            for b in chain:
+                keys = idle.get(b, {}).get("rotate", [])
+                vals = [k["value"] for k in keys if abs(k["time"] - t) < 1e-9]
+                self.assertTrue(vals, f"idle {b} must key at t={t} so the lean is exact")
+                lean += vals[0]
+            self.assertTrue(-50.0 <= lean <= -40.0, f"idle weapon lean {lean} at t={t} not within 45+/-5 deg")
 
         # Open palm is painted fingers-up: it must hang (fingers below the wrist).
         hand1 = atts["hand_l"]["hand_1"]

@@ -195,6 +195,7 @@ play_state_animation = function(self, force)
 	if not force and self.last_played_transition == self.fsm.transition_count and self.current_anim == st then
 		return
 	end
+	local prev_anim = self.current_anim
 	self.current_anim = st
 	self.last_played_transition = self.fsm.transition_count
 	reset_event_gate(self)
@@ -205,7 +206,7 @@ play_state_animation = function(self, force)
 		playback = go.PLAYBACK_LOOP_FORWARD
 	end
 
-	spine.play_anim("#spinemodel", st, playback, { blend_duration = 0.08 }, spine_callback)
+	spine.play_anim("#spinemodel", st, playback, { blend_duration = constants.anim_blend_duration(prev_anim, st) }, spine_callback)
 	update_visual_tint(self)
 end
 

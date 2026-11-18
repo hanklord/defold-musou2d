@@ -65,6 +65,17 @@ function M.run()
 	end
 
 	print(string.format("  [PASS] test_movement (%d suites)", passed))
+	-- Animation cross-fade: idle <-> run uses the longer blend (45 deg idle lean vs upright run)
+	do
+		local S = constants.STATES
+		assert_near(constants.anim_blend_duration(S.IDLE, S.RUN), constants.ANIM_BLEND_IDLE_RUN, 1e-6, "idle->run blend")
+		assert_near(constants.anim_blend_duration(S.RUN, S.IDLE), constants.ANIM_BLEND_IDLE_RUN, 1e-6, "run->idle blend")
+		assert_near(constants.anim_blend_duration(S.IDLE, S.ATTACK_1), constants.ANIM_BLEND_DEFAULT, 1e-6, "idle->attack blend")
+		assert_near(constants.anim_blend_duration(nil, S.IDLE), constants.ANIM_BLEND_DEFAULT, 1e-6, "first anim blend")
+		assert_true(constants.ANIM_BLEND_IDLE_RUN > constants.ANIM_BLEND_DEFAULT, "idle/run blend is longer")
+		passed = passed + 1
+	end
+
 	return passed
 end
 
