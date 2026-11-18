@@ -64,7 +64,6 @@ function M.run()
 		passed = passed + 1
 	end
 
-	print(string.format("  [PASS] test_movement (%d suites)", passed))
 	-- Animation cross-fade: idle <-> run uses the longer blend (45 deg idle lean vs upright run)
 	do
 		local S = constants.STATES
@@ -73,8 +72,15 @@ function M.run()
 		assert_near(constants.anim_blend_duration(S.IDLE, S.ATTACK_1), constants.ANIM_BLEND_DEFAULT, 1e-6, "idle->attack blend")
 		assert_near(constants.anim_blend_duration(nil, S.IDLE), constants.ANIM_BLEND_DEFAULT, 1e-6, "first anim blend")
 		assert_true(constants.ANIM_BLEND_IDLE_RUN > constants.ANIM_BLEND_DEFAULT, "idle/run blend is longer")
+		-- Recovering from a strike back into the 45 deg idle lean gets the longer return blend
+		for _, st in ipairs({ S.ATTACK_1, S.ATTACK_2, S.ATTACK_3, S.CHARGE_ATTACK, S.MUSOU_SKILL }) do
+			assert_near(constants.anim_blend_duration(st, S.IDLE), constants.ANIM_BLEND_ATTACK_TO_IDLE, 1e-6, st .. "->idle blend")
+		end
+		assert_near(constants.anim_blend_duration(S.ATTACK_1, S.ATTACK_2), constants.ANIM_BLEND_DEFAULT, 1e-6, "combo chain keeps snappy blend")
 		passed = passed + 1
 	end
+
+	print(string.format("  [PASS] test_movement (%d suites)", passed))
 
 	return passed
 end

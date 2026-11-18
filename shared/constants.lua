@@ -202,10 +202,24 @@ M.ANIM_EVENTS = {
 -- idle <-> run gets a longer blend to avoid a visible weapon snap.
 M.ANIM_BLEND_DEFAULT = 0.08
 M.ANIM_BLEND_IDLE_RUN = 0.18
+-- Strikes finish with the blade front-low; returning to the 45 deg idle lean
+-- rotates it ~70-100 deg, so give that return a softer blend.
+M.ANIM_BLEND_ATTACK_TO_IDLE = 0.14
+
+local ATTACK_ANIMS = {
+	attack_1 = true,
+	attack_2 = true,
+	attack_3 = true,
+	charge_attack = true,
+	musou_skill = true,
+}
 
 function M.anim_blend_duration(from_anim, to_anim)
 	if (from_anim == "idle" and to_anim == "run") or (from_anim == "run" and to_anim == "idle") then
 		return M.ANIM_BLEND_IDLE_RUN
+	end
+	if to_anim == "idle" and ATTACK_ANIMS[from_anim] then
+		return M.ANIM_BLEND_ATTACK_TO_IDLE
 	end
 	return M.ANIM_BLEND_DEFAULT
 end
