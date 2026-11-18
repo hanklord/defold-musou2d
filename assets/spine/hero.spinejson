@@ -72,8 +72,8 @@
     {
       "name": "weapon_guandao",
       "parent": "hand_r",
-      "x": 42.0,
-      "y": 12.0,
+      "x": 0.0,
+      "y": 0.0,
       "length": 180.0
     },
     {
@@ -340,9 +340,9 @@
         },
         "hand_l": {
           "hand_1": {
-            "x": 1.41,
-            "y": 12.86,
-            "rotation": 0.0,
+            "x": -1.41,
+            "y": -12.86,
+            "rotation": 180.0,
             "scaleX": 0.38,
             "scaleY": 0.38,
             "width": 74,
@@ -444,10 +444,10 @@
         },
         "weapon_guandao": {
           "weapon_guandao": {
-            "x": 5.94,
-            "y": 27.42,
-            "rotation": -25.0,
-            "scaleX": 0.38,
+            "x": 6.2,
+            "y": 27.36,
+            "rotation": 0.0,
+            "scaleX": -0.38,
             "scaleY": 0.38,
             "width": 136,
             "height": 900

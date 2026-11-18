@@ -126,13 +126,13 @@ python3 tools/auto_rig_spine.py \
              - `forearm_r` `(-16, -34)` → slot `forearm_r`
                - `arm_r_lower` *(alias)*
                - `hand_r` `(2, -42)` — 持刀握點（無 slot，見下方說明）
-                 - `weapon_guandao` `(42, 12)` → slot `weapon_guandao`
+                 - `weapon_guandao` `(0, 0)` → slot `weapon_guandao`（骨原點 = 握點；attachment `scaleX < 0` 鏡像刀刃使刃口朝 +X 前方，rest rotation 0° 直立）
                    - `weapon` *(alias)*
            - `arm_l` `(26, 50)` → slot `arm_upper_l`
              - `arm_l_upper` *(alias)*
              - `forearm_l` `(14, -32)` → slot `forearm_l`
                - `arm_l_lower` *(alias)*
-               - `hand_l` `(8, -26)` → slot `hand_l`（預設 attachment `hand_2`，動畫以 attachment timeline 切換 `hand_1..hand_4` 手勢）
+               - `hand_l` `(8, -26)` → slot `hand_l`（`hand_1` 張開手掌原圖為指尖朝上，attachment 旋轉 180° 使其由腕部垂下；預設 attachment `hand_2`，動畫以 attachment timeline 切換 `hand_1..hand_4` 手勢）
          - `thigh_r` `(-16, -6)` → slot `thigh_r`
            - `leg_r_upper` *(alias)*
            - `shin_r` `(-4, -52)` → slot `shin_r`

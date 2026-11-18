@@ -13,6 +13,7 @@ Validates:
 """
 
 import json
+import math
 import os
 import subprocess
 import sys
@@ -215,6 +216,40 @@ class TestSpinePipeline(unittest.TestCase):
         self.assertIn("musou_burst", musou_names)
         self.assertEqual(musou_names.count("hitbox_on"), 3)
         self.assertEqual(musou_names.count("hitbox_off"), 3)
+
+    def test_05_weapon_grip_and_hand_alignment(self) -> None:
+        """Regression for the idle-pose bug: weapon floated 42px beside the
+        right hand with its edge facing backward, and the open palm (hand_1)
+        floated above the left wrist instead of hanging from it."""
+        with open(os.path.join(ROOT_DIR, "assets", "spine", "hero.spinejson"), "r", encoding="utf-8") as f:
+            data = json.load(f)
+        bones = {b["name"]: b for b in data["bones"]}
+        weapon_bone = bones["weapon_guandao"]
+        self.assertEqual(weapon_bone["parent"], "hand_r")
+        self.assertAlmostEqual(weapon_bone.get("x", 0.0), 0.0, places=3)
+        self.assertAlmostEqual(weapon_bone.get("y", 0.0), 0.0, places=3)
+
+        atts = data["skins"][0]["attachments"]
+        weapon_att = atts["weapon_guandao"]["weapon_guandao"]
+        self.assertLess(weapon_att["scaleX"], 0.0, "blade edge must be mirrored to face +X")
+        # The grip pivot (pivot_norm) must map back onto the bone origin.
+        with open(os.path.join(ROOT_DIR, "assets", "spine", "parts_metadata.json"), "r", encoding="utf-8") as f:
+            meta = json.load(f)["parts"]
+        for slot, part in (("weapon_guandao", "weapon_guandao"), ("hand_l", "hand_1")):
+            att = atts[slot][part]
+            pn = meta[part]["pivot_norm"]
+            lx = (pn[0] - 0.5) * att["width"] * att["scaleX"]
+            ly = (0.5 - pn[1]) * att["height"] * att["scaleY"]
+            r = math.radians(att.get("rotation", 0.0))
+            wx = att["x"] + lx * math.cos(r) - ly * math.sin(r)
+            wy = att["y"] + lx * math.sin(r) + ly * math.cos(r)
+            self.assertAlmostEqual(wx, 0.0, delta=0.05, msg=f"{part} pivot x off bone")
+            self.assertAlmostEqual(wy, 0.0, delta=0.05, msg=f"{part} pivot y off bone")
+
+        # Open palm is painted fingers-up: it must hang (fingers below the wrist).
+        hand1 = atts["hand_l"]["hand_1"]
+        self.assertAlmostEqual(abs(hand1["rotation"]), 180.0, places=2)
+        self.assertLess(hand1["y"], 0.0)
 
     def test_04_fallback_single_portrait_mode(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

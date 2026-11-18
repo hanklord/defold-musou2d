@@ -77,11 +77,15 @@ PART_SPECS: Dict[str, Dict] = {
         "rest_rotation": 0.0,
     },
     "hand_1": {
+        # Open palm is painted fingers-UP with the cuff/wrist at the bottom
+        # (pivot 0.86). The other hand islands are painted wrist-up/fingers-down,
+        # so this one must be turned 180 deg to hang from the wrist like they do;
+        # otherwise the palm floats above the forearm instead of continuing it.
         "pivot_norm": (0.45, 0.86),
         "bone": "hand_l",
         "slot": "hand_l",
         "scale": 0.38,
-        "rest_rotation": 0.0,
+        "rest_rotation": 180.0,
     },
     "hand_2": {
         "pivot_norm": (0.48, 0.18),
@@ -147,11 +151,16 @@ PART_SPECS: Dict[str, Dict] = {
         "rest_rotation": 0.0,
     },
     "weapon_guandao": {
+        # Grip point on the shaft; the weapon bone sits exactly on hand_r so
+        # this point is held in the right hand in every animation.
         "pivot_norm": (0.62, 0.58),
         "bone": "weapon_guandao",
         "slot": "weapon_guandao",
         "scale": 0.38,
-        "rest_rotation": -25.0,
+        "rest_rotation": 0.0,
+        # Source sheet paints the cutting edge on the LEFT; the rig faces +X
+        # (player facing = 1), so mirror the blade to put the edge forward.
+        "flip_x": True,
     },
 }
 
@@ -532,6 +541,7 @@ def compute_attachment_entry(
     pivot_norm: Tuple[float, float],
     scale: float,
     rest_rotation: float = 0.0,
+    flip_x: bool = False,
 ) -> Dict[str, float]:
     """
     Computes Spine 4.2 region attachment coordinates (x, y, rotation, scaleX, scaleY, width, height)
@@ -540,7 +550,9 @@ def compute_attachment_entry(
     px = pivot_norm[0] * width
     py = pivot_norm[1] * height
     # Offset from pivot to image center in unrotated bone space (+X right, +Y up)
-    dx = (width * 0.5 - px) * scale
+    sign_x = -1.0 if flip_x else 1.0
+    # Mirroring the image (negative scaleX) mirrors the pivot about the center too.
+    dx = (width * 0.5 - px) * scale * sign_x
     dy = (py - height * 0.5) * scale
     rad = math.radians(rest_rotation)
     cos_r = math.cos(rad)
@@ -551,7 +563,7 @@ def compute_attachment_entry(
         "x": round(rx, 2),
         "y": round(ry, 2),
         "rotation": round(rest_rotation, 2),
-        "scaleX": round(scale, 4),
+        "scaleX": round(scale * sign_x, 4),
         "scaleY": round(scale, 4),
         "width": int(width),
         "height": int(height),
@@ -581,7 +593,7 @@ def build_spine_42_json(part_meta: Dict[str, Dict]) -> Dict:
         {"name": "arm_r", "parent": "torso", "x": -28.0, "y": 52.0, "length": 40.0},
         {"name": "forearm_r", "parent": "arm_r", "x": -16.0, "y": -34.0, "length": 42.0},
         {"name": "hand_r", "parent": "forearm_r", "x": 2.0, "y": -42.0, "length": 18.0},
-        {"name": "weapon_guandao", "parent": "hand_r", "x": 42.0, "y": 12.0, "length": 180.0},
+        {"name": "weapon_guandao", "parent": "hand_r", "x": 0.0, "y": 0.0, "length": 180.0},
         {"name": "arm_l", "parent": "torso", "x": 26.0, "y": 50.0, "length": 38.0},
         {"name": "forearm_l", "parent": "arm_l", "x": 14.0, "y": -32.0, "length": 34.0},
         {"name": "hand_l", "parent": "forearm_l", "x": 8.0, "y": -26.0, "length": 20.0},
@@ -631,6 +643,7 @@ def build_spine_42_json(part_meta: Dict[str, Dict]) -> Dict:
             pivot_norm=tuple(info["pivot_norm"]),
             scale=spec["scale"],
             rest_rotation=spec["rest_rotation"],
+            flip_x=spec.get("flip_x", False),
         )
 
     events = {
